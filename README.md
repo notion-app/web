@@ -1,4 +1,4 @@
-#Notion Web
+## Notion Web
 Web client for notion
 
 ## Requirements
