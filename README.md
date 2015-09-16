@@ -1,10 +1,11 @@
-# webpack-example
-Example Javascript ES6 project with React, React Router and Flux (Alt)
-Read the article related to this project on our UnderTheHood blog: https://underthehood.myob.com/changing-of-the-guard-in-web-technologies/
+#Notion Web
+Web client for notion
 
 ## Requirements
 Make sure you have installed NodeJS and NPM first and that you can run them from the command line.
 * Run `npm install` first to install dependencies
+* Run `npm install -g bower`
+* Run `bower install`
 
 ## Commands
 * `npm run build` - Build the project
