@@ -12,6 +12,7 @@ module.exports = {
     module: path.join(srcPath, 'module.js'),
     common: ['react', 'react-router', 'alt']
   },
+
   resolve: {
     root: srcPath,
     extensions: ['', '.js'],
@@ -33,7 +34,9 @@ module.exports = {
      { test: /\.woff2$/,   loader: "url-loader?limit=10000&minetype=application/font-woff" },
      { test: /\.ttf$/,    loader: "file-loader" },
      { test: /\.eot$/,    loader: "file-loader" },
-     { test: /\.svg$/,    loader: "file-loader" }
+     { test: /\.svg$/,    loader: "file-loader" },
+     { test: /\.png$/, loader: "file-loader" },
+     { test: /\.jpg$/, loader: "file-loader" },
     ]
   },
   plugins: [

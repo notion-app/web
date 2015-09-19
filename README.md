@@ -6,6 +6,7 @@ Make sure you have installed NodeJS and NPM first and that you can run them from
 * Run `npm install` first to install dependencies
 * Run `npm install -g bower`
 * Run `bower install`
+* Install graphicsmagick (use brew on Mac)
 
 ## Commands
 * `npm run build` - Build the project

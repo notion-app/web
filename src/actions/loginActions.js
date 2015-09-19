@@ -3,15 +3,19 @@ import {createActions} from 'alt/utils/decorators';
 import LoginManager from 'util/LoginManager';
 
 @createActions(flux)
-class DummyActions {
+class LoginActions {
   constructor() {
-    this.generateActions('updateName', 'updateLogin');
   }
-  updateAuthInfo (fbInfo) {
+
+  login(fbInfo) {
     LoginManager.login(fbInfo);
     this.dispatch(LoginManager.getAuthInfo());
   }
 
+  logout() {
+    LoginManager.logout();
+    this.dispatch();
+  }
 }
 
-export default DummyActions;
+export default LoginActions;
