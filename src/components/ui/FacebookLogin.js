@@ -46,11 +46,18 @@ module.exports = React.createClass({
 
     responseApi: function( authResponse ) {
       FB.api('/me', function(response) {
-
         response.status = 'connected';
         response.accessToken = authResponse.accessToken;
         response.expiresIn = authResponse.expiresIn;
         response.signedRequest = authResponse.signedRequest;
+
+
+
+        let picAPIUrl = `/${response.id}/picture`;
+        FB.api(picAPIUrl, 'get', {type:'large'}, (resp) => {
+            response.profileImage = resp.data.url;
+        });
+
 
         if ( this.props.loginHandler ) {
           this.props.loginHandler( response );
