@@ -40,9 +40,9 @@ class NotionNavBar extends React.Component {
 
 
   render() {
-    console.log('render nav', this.props);
+    let check = LoginManager.getAuthInfo();
     let isFixedTop = this.state.style == 'fixedTop' ? true:false;
-    let notLoggedIn = _.isNull(this.props.userAuth);
+    let notLoggedIn = _.isNull(this.props.userAuth) && !check.loggedIn 
     return (
       <Navbar brand='Notion' fixedTop={isFixedTop}>
         <Nav right eventKey={0}> {/* This is the eventKey referenced */}

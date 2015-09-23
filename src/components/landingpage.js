@@ -44,6 +44,7 @@ class LandingPageComponent extends React.Component {
   }
 
   handleFacebookLogin(result) {
+    console.log('result',result);
     LoginActions.login(result);
   }
 
@@ -66,7 +67,7 @@ class LandingPageComponent extends React.Component {
               <FacebookLogin
                 appId="884810131605384"
                 class="facebook-login"
-                scope="public_profile, email"
+                scope="public_profile, email,"
                 loginHandler={ this.handleFacebookLogin } />
             </div>
           </Row>
