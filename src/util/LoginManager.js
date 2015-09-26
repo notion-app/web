@@ -7,7 +7,7 @@ module.exports = {
   },
 
   login(fbData) {
-    let authInfo = {'loggedIn':true,'fbData':fbData};
+    let authInfo = {loggedIn:true,fbData:fbData};
     localStorage.setItem('authInfo', JSON.stringify(authInfo));
   },
 
@@ -15,5 +15,5 @@ module.exports = {
     let authInfo = JSON.parse(localStorage.getItem('authInfo'));
     authInfo.loggedIn = false;
     localStorage.setItem('authInfo', JSON.stringify(authInfo));
-  }
+  },
 }

@@ -11,7 +11,7 @@ const routes = (
   <Route handler={App} >
     <Route name='Landing Page' path='/' handler={LandingPageComponent}/>
     <Route name='example' path='/example' handler={ExampleComponent}/>
-    <Route name='notebookview' path='/notebookview' handler={NotebookView}/>
+    <Route name='notebooks' path='/notebooks' handler={NotebookView}/>
   </Route>
 );
 

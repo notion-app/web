@@ -56,14 +56,10 @@ module.exports = React.createClass({
         let picAPIUrl = `/${response.id}/picture`;
         FB.api(picAPIUrl, 'get', {type:'large'}, (resp) => {
             response.profileImage = resp.data.url;
+            if ( this.props.loginHandler ) {
+              this.props.loginHandler( response );
+            }
         });
-
-
-        if ( this.props.loginHandler ) {
-          this.props.loginHandler( response );
-        }
-
-
       }.bind(this));
     },
 

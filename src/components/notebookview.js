@@ -13,7 +13,6 @@ class NotebookView extends React.Component {
     super(props);
     this.state = {
       name: props.name,
-      router: props.router
     }
   }
 
@@ -32,7 +31,7 @@ class NotebookView extends React.Component {
   render() {
     return (
       <div className='container landingContainer span5 fill'>
-        <NotionNavBar name='Notion' style='fixedTop'router={this.state.router}/>
+        <NotionNavBar name='Notion' style='fixedTop'/>
         <Grid>
           <Row className="show-grid">
             <Col xs={12} md={4}>
@@ -73,10 +72,6 @@ class NotebookView extends React.Component {
     );
   }
 
-  onChange = evt => {
-    this.setState({name: evt.target.value});
-    DummyActions.updateName(evt.target.value);
-  }
 }
 
 export default NotebookView;

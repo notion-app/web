@@ -7,6 +7,7 @@ import { Button, Nav, Navbar, NavItem, Jumbotron, Grid, Row} from 'react-bootstr
 import NotionNavBar from 'components/ui/notionNavBar';
 import LoginManager from 'util/LoginManager';
 import ExampleComponent from 'components/example';
+import NotebookView from 'components/notebookview';
 import _ from 'lodash';
 
 require('../css/landingpage.css');
@@ -44,7 +45,6 @@ class LandingPageComponent extends React.Component {
   }
 
   handleFacebookLogin(result) {
-    console.log('result',result);
     LoginActions.login(result);
   }
 
@@ -84,9 +84,8 @@ class LandingPageComponent extends React.Component {
       return this.renderRegistration();
     } else {
       var router = this.context.router;
-      return (
-        <ExampleComponent router={router}/>
-      );
+      window.location.replace('/notebooks');
+      return (null);
     }
   }
 
