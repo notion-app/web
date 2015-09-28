@@ -56,54 +56,54 @@ class NotionNavBar extends React.Component {
   renderSidebarContent() {
     let authInfo = LoginManager.getAuthInfo()
     return (
-      <span className="glyphicon glyphicon-menu-hamburger hamburger-icon" onClick={this.openSidebar}>
-      <Dock position='left' fluid={true} size={.25} isVisible={this.state.isVisible}>
-      <div className="row profile">
-     		<div className="col-md-3">
-     			<div className="profile-sidebar">
-            <span className="glyphicon glyphicon-remove close-icon" onClick={this.closeSidebar}></span>
-     				<div className="profile-userpic">
-              <img src={authInfo.fbData.profileImage} className="img-responsive" alt=""/>
+        <span className="glyphicon glyphicon-menu-hamburger hamburger-icon" onClick={this.openSidebar}>
+        <Dock position='left' fluid={true} size={.25} isVisible={this.state.isVisible}>
+        <div className="row profile">
+       		<div className="col-md-3">
+       			<div className="profile-sidebar">
+              <span className="glyphicon glyphicon-remove close-icon" onClick={this.closeSidebar}></span>
+       				<div className="profile-userpic">
+                <img src={authInfo.fbData.profileImage} className="img-responsive" alt=""/>
 
-     				</div>
+       				</div>
 
-     				<div className="profile-usertitle">
-     					<div className="profile-usertitle-name">
-     						{authInfo.fbData.name}
-     					</div>
-     				</div>
+       				<div className="profile-usertitle">
+       					<div className="profile-usertitle-name">
+       						{authInfo.fbData.name}
+       					</div>
+       				</div>
 
 
-     				<div className="profile-usermenu">
-     					<ul className="nav">
-     						<li className="active">
-     							<a href="#">
-     							<i className="glyphicon glyphicon-home"></i>
-     							Overview </a>
-     						</li>
-     						<li>
-     							<a href="#">
-     							<i className="glyphicon glyphicon-user"></i>
-     							Account Settings </a>
-     						</li>
-     						<li>
-     							<a href="#" target="_blank">
-     							<i className="glyphicon glyphicon-ok"></i>
-     							Tasks </a>
-     						</li>
-     						<li>
-     							<a href="#">
-     							<i className="glyphicon glyphicon-flag"></i>
-     							Help </a>
-     						</li>
-     					</ul>
-     				</div>
+       				<div className="profile-usermenu">
+       					<ul className="nav">
+       						<li className="active">
+       							<a href="#">
+       							<i className="glyphicon glyphicon-home"></i>
+       							Overview </a>
+       						</li>
+       						<li>
+       							<a href="#">
+       							<i className="glyphicon glyphicon-user"></i>
+       							Account Settings </a>
+       						</li>
+       						<li>
+       							<a href="#" target="_blank">
+       							<i className="glyphicon glyphicon-ok"></i>
+       							Tasks </a>
+       						</li>
+       						<li>
+       							<a href="#">
+       							<i className="glyphicon glyphicon-flag"></i>
+       							Help </a>
+       						</li>
+       					</ul>
+       				</div>
 
-     			</div>
-     		</div>
-      </div>
-    </Dock>
-  </span>
+       			</div>
+       		</div>
+        </div>
+      </Dock>
+    </span>
     )
   }
 
@@ -124,9 +124,11 @@ class NotionNavBar extends React.Component {
     let notLoggedIn = (_.isNull(this.props.userAuth) && (_.isNull(check))) || (!_.isNull(check) && !check.loggedIn);
     return (
       <Navbar brand='Notion' fixedTop={true}>
-          {notLoggedIn? null:this.renderSidebarContent()}
         <Nav right eventKey={0}> {/* This is the eventKey referenced */}
           {notLoggedIn? null:this.renderNavLinks()}
+        </Nav>
+        <Nav left eventKey={1}>
+            {notLoggedIn? null:this.renderSidebarContent()}
         </Nav>
       </Navbar>
     )

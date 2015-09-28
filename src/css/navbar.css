@@ -5,6 +5,7 @@ Licensed under MIT
 ***/
 
 
+
 /* Profile container */
 .profile {
   margin: 20px 0;
@@ -116,19 +117,25 @@ Licensed under MIT
 }
 
 .hamburger-icon {
-  right: 32%;
+  position: fixed;
+  left:10px;
   font-size: 30px;
   top: 10px;
+  color:#777;
 }
 
 .close-icon{
   left: 97%;
   font-size: 19px;
-  top: -36px
+  top: -36px;
+  color:#777;
 
 }
 
 .hamburger-icon:hover, .hamburger-icon:focus {
-  	color: #F0C425;
-    background-color: #1F2E54;
+  	color: #000;
+}
+
+.close-icon:hover, .close-icon:focus {
+  	color: #000;
   	}
