@@ -4,6 +4,71 @@
 	margin-left: 6em !important;
 }
 
-.panel-body {	
+.panel-body {
 	text-align: center !important;
+}
+
+.detailDock {
+  width: 50%;
+  left: 25%;
+  position: relative;
+  padding-top:10px;
+}
+
+
+.deatilPanel {
+  width: 30%;
+  position: relative;
+  left: 20%;
+}
+
+.detailButtons{
+	width: 30%;
+	position: relative;
+	left: 20%;
+}
+
+.openButton {
+	width: 100px;
+
+}
+
+.manageButton {
+width: 100px;
+}
+
+.detailToolbar {
+	position: relative;
+	left:50px;
+	padding-top: 10px;
+}
+
+.notesGrid {
+	margin-left: -12em;
+}
+
+
+@media (max-width: 1200px) {
+	.notebook-icon {
+		height: 12em !important;
+		width: 12em !important;
+		margin-left: 3em !important;
+	}
+
+	.notebookimg {
+		height: 8em !important;
+		width: 8em !important;
+		margin-left: 4em !important;
+	}
+
+	.detailToolbar {
+		position: relative;
+		left:50px;
+		padding-top: 10px;
+	}
+	.deatilPanel {
+	  width: 31%;
+	  position: relative;
+	  left: 20%;
+	}
 }

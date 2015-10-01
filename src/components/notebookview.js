@@ -3,7 +3,7 @@ import connectToStores from 'alt/utils/connectToStores';
 import NotebookStore from 'stores/NotebookStore';
 import NotebookActions from 'actions/NotebookActions';
 import NotionNavBar from 'components/ui/notionNavBar';
-import { Button, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
+import { Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
 import _ from 'lodash';
 import Dock from 'react-dock';
 
@@ -52,7 +52,6 @@ class NotebookView extends React.Component {
 }
 
   onNotebookClick(index){
-    //console.log('clicked', this.state.notebooks[ind-1tat]);
     if(this.state.detailDockVisable){
       this.setState({detailDockVisable:false});
     }
@@ -65,8 +64,46 @@ class NotebookView extends React.Component {
     }
     let notebook = this.state.notebooks[this.state.currentSelectedNotebook];
     return (
-      <Dock position='bottom' isVisible={this.state.detailDockVisable} onVisibleChanged={this.handleVisibleChanged}>
-        <h1>{notebook.title}</h1>
+      <Dock position='bottom' isVisible={this.state.detailDockVisable} onVisibleChanged={this.handleVisibleChanged} flud={true} size={.45}>
+        <div className='detailDock'>
+          <Grid>
+            <Col>
+              <Panel className='deatilPanel' header={ <h3> {notebook.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary">
+                <Row className='center'>
+                  <Thumbnail className="notebook-icon notebookimg" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
+                </Row>
+                <Label className="center" bsStyle="default">{notebook.lastEdit}</Label>
+                  <ButtonToolbar className='detailToolbar'>
+                      <Button className='openButton'>
+                        Open
+                      </Button>
+                      <Button className='manageButton'>
+                        Manage
+                      </Button>
+                  </ButtonToolbar>
+              </Panel>
+            </Col>
+          </Grid>
+          <Grid className='notesGrid'>
+            <Row className='show-grid'>
+              <Col xs={12} md={4}>
+                <Panel header={<h3>Note 1</h3>} bsStyle='primary'>
+                  Preview
+                </Panel>
+              </Col>
+              <Col xs={12} md={4}>
+                <Panel header={<h3>Note 1</h3>} bsStyle='primary'>
+                  Preview
+                </Panel>
+              </Col>
+              <Col xs={12} md={4}>
+                <Panel header={<h3>Note 1</h3>} bsStyle='primary'>
+                  Preview
+                </Panel>
+              </Col>
+            </Row>
+          </Grid>
+        </div>
       </Dock>
     );
 }
