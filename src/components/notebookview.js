@@ -1,6 +1,8 @@
 import React from 'react';
 import connectToStores from 'alt/utils/connectToStores';
 import NotebookStore from 'stores/NotebookStore';
+import WindowStore from 'stores/WindowStore';
+import WindowActions from 'actions/WindowActions';
 import NotebookActions from 'actions/NotebookActions';
 import NotionNavBar from 'components/ui/notionNavBar';
 import { Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
@@ -14,12 +16,18 @@ class NotebookView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: props.name,
-      notebooks: [],
+      noteBookStore: {
+        notebooks:[]
+      },
       detailDockVisable:false,
-      currentSelectedNotebook:null
+      currentSelectedNotebook:null,
+      windowStore:{
+        width:window.innerWidth,
+        height:window.innerHeight
+      }
     }
     this.onChange = this.onChange.bind(this);
+    this.onWindowChange = this.onWindowChange.bind(this);
     this.renderNotebooks = this.renderNotebooks.bind(this);
     this.handleVisibleChanged = this.handleVisibleChanged.bind(this);
     this.onNotebookClick = this.onNotebookClick.bind(this);
@@ -31,16 +39,45 @@ class NotebookView extends React.Component {
 
   componentDidMount(){
     NotebookStore.listen(this.onChange);
+    WindowStore.listen(this.onWindowChange);
     NotebookActions.fetchNotebooks();
+    window.addEventListener("resize", this.updateWindowDimensions);
+  }
+
+  shouldComponentUpdate(nextProps,nextState){;
+    //console.log(this.state);
+    //console.log(nextState);
+    if(this.state.noteBookStore.notebooks.length != nextState.noteBookStore.notebooks.length ){
+      return true
+    }
+
+    else if(this.state.detailDockVisable != nextState.detailDockVisable){
+      return true;
+    }
+
+    else if(this.state.windowStore.width != nextState.windowStore.width){
+      return true;
+
+    }
+
+    return false;
+  }
+
+  onWindowChange(){
+    this.setState({windowStore:WindowStore.getState()});
+  }
+
+  updateWindowDimensions(e){
+    WindowActions.setDimensions({width:window.innerWidth, height:window.innerHeight});
   }
 
   onChange(){
-    this.setState(NotebookStore.getState());
+    this.setState({noteBookStore:NotebookStore.getState()});
   }
 
 
   static getStores(props) {
-    return [NotebookStore];
+    return [NotebookStore, WindowStore];
   }
 
   static getPropsFromStores(props) {
@@ -62,7 +99,7 @@ class NotebookView extends React.Component {
     if(this.state.currentSelectedNotebook == null){
       return(null);
     }
-    let notebook = this.state.notebooks[this.state.currentSelectedNotebook];
+    let notebook = this.state.noteBookStore.notebooks[this.state.currentSelectedNotebook];
     return (
       <Dock position='bottom' isVisible={this.state.detailDockVisable} onVisibleChanged={this.handleVisibleChanged} flud={true} size={.45}>
         <div className='detailDock'>
@@ -110,10 +147,11 @@ class NotebookView extends React.Component {
 
 
   renderNotebooks() {
-    if(this.state.notebooks.length == 0 ){
+    if(this.state.noteBookStore.notebooks.length == 0){
       return(null);
     }
-    let chunks = _.chunk(this.state.notebooks,3);
+    console.log('render')
+    let chunks = this.state.windowStore.width <= 991? _.chunk(this.state.noteBookStore.notebooks,2): _.chunk(this.state.noteBookStore.notebooks,3);
     let childKey = 0;
     let rowKey = 0;
     let notebookViews = _.map(chunks, (notebooks,index) =>{

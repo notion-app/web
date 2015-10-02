@@ -47,6 +47,12 @@ width: 100px;
 	margin-left: -12em;
 }
 
+@media (max-width:991px){
+	.col-xs-12 {
+  width: 40%;
+	}
+}
+
 
 @media (max-width: 1200px) {
 	.notebook-icon {
