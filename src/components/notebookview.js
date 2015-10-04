@@ -95,19 +95,41 @@ class NotebookView extends React.Component {
     this.setState({currentSelectedNotebook:index-1, detailDockVisable:true});
   }
 
+  renderNotes(notebook){
+    if(notebook != null){
+      if(notebook.notes.length == 0){
+        return(null);
+      }
+
+      let chunks = _.chunk(notebook.notes,3);
+      let first = chunks[0];
+      let notebookChildren = _.map(first, (note,index)=>{
+        return (
+          <Col xs={12} md={4} className='notecol'>
+            <Panel header={<h3>{note.title}</h3>} bsStyle='primary'>
+              {note.preview}
+            </Panel>
+          </Col>
+        )
+      });
+      return notebookChildren;
+    }
+  }
+
   renderDetailDock(){
     if(this.state.currentSelectedNotebook == null){
       return(null);
     }
     let notebook = this.state.noteBookStore.notebooks[this.state.currentSelectedNotebook];
+    this.renderNotes(notebook)
     return (
-      <Dock position='bottom' isVisible={this.state.detailDockVisable} onVisibleChanged={this.handleVisibleChanged} flud={true} size={.45}>
+      <Dock position='bottom' isVisible={this.state.detailDockVisable} onVisibleChanged={this.handleVisibleChanged} flud={true} size={.50}>
         <div className='detailDock'>
           <Grid>
             <Col>
               <Panel className='deatilPanel' header={ <h3> {notebook.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary">
                 <Row className='center'>
-                  <Thumbnail className="notebook-icon notebookimg" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
+                  <Thumbnail className="notebook-icon notebookimg img img-responsive" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
                 </Row>
                 <Label className="center" bsStyle="default">{notebook.lastEdit}</Label>
                   <ButtonToolbar className='detailToolbar'>
@@ -123,21 +145,7 @@ class NotebookView extends React.Component {
           </Grid>
           <Grid className='notesGrid'>
             <Row className='show-grid'>
-              <Col xs={12} md={4}>
-                <Panel header={<h3>Note 1</h3>} bsStyle='primary'>
-                  Preview
-                </Panel>
-              </Col>
-              <Col xs={12} md={4}>
-                <Panel header={<h3>Note 1</h3>} bsStyle='primary'>
-                  Preview
-                </Panel>
-              </Col>
-              <Col xs={12} md={4}>
-                <Panel header={<h3>Note 1</h3>} bsStyle='primary'>
-                  Preview
-                </Panel>
-              </Col>
+              {this.renderNotes(notebook)}
             </Row>
           </Grid>
         </div>
@@ -150,7 +158,6 @@ class NotebookView extends React.Component {
     if(this.state.noteBookStore.notebooks.length == 0){
       return(null);
     }
-    console.log('render')
     let chunks = this.state.windowStore.width <= 991? _.chunk(this.state.noteBookStore.notebooks,2): _.chunk(this.state.noteBookStore.notebooks,3);
     let childKey = 0;
     let rowKey = 0;
@@ -158,7 +165,7 @@ class NotebookView extends React.Component {
       let notebookChildren = _.map(notebooks, (notebook,notebookIndex)=>{
         childKey = childKey+1;
         return (
-          <Col xs={12} md={4} key={childKey}>
+          <Col xs={12} md={4} key={childKey} className='notebookcol'>
             <Panel header={ <h3> {notebook.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary" onClick={this.onNotebookClick.bind(this,childKey)}>
               <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
               <Label className="center" bsStyle="default">{notebook.lastEdit}</Label>
@@ -180,7 +187,7 @@ class NotebookView extends React.Component {
     let notebookViews = this.renderNotebooks();
     return (
       <div className='container landingContainer span5 fill'>
-        <NotionNavBar name='Notion' style='fixedTop'/>
+        <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>
         {this.renderDetailDock()}
         <Grid>
           {notebookViews}

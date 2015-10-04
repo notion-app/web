@@ -116,6 +116,16 @@ Licensed under MIT
   }
 }
 
+@media (max-width: 765px){
+  .hamburger-icon{
+    position: fixed;
+    display: none;
+  }
+  body{
+    padding-top: 165px;
+  }
+}
+
 .hamburger-icon {
   position: fixed;
   left:10px;
