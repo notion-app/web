@@ -4,6 +4,8 @@ import {Route, DefaultRoute} from 'react-router';
 import LandingPageComponent from 'components/landingpage.js';
 import ExampleComponent from 'components/example';
 import NotebookView from 'components/notebookview';
+import NotesView from 'components/notesview'
+import NoteEditView from 'components/noteEditView'
 import App from 'components/app'
 
 
@@ -12,6 +14,8 @@ const routes = (
     <Route name='Landing Page' path='/' handler={LandingPageComponent}/>
     <Route name='example' path='/example' handler={ExampleComponent}/>
     <Route name='notebooks' path='/notebooks' handler={NotebookView}/>
+    <Route name='notes' path='/notebooks/:notebookId' handler={NotesView}/>
+    <Route name='note edit' path='/notebooks/:notebookId/note/:noteId/edit' handler={NoteEditView}/>
   </Route>
 );
 

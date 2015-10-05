@@ -83,9 +83,9 @@ class NotionNavBar extends React.Component {
          				<div className="profile-usermenu">
          					<ul className="nav">
          						<li className="active">
-         							<a href="#">
-         							<i className="glyphicon glyphicon-home"></i>
-         							Overview </a>
+         							<a href="/notebooks">
+         							<i className="glyphicon glyphicon-list-alt"></i>
+         							Notebooks </a>
          						</li>
          						<li>
          							<a href="#">

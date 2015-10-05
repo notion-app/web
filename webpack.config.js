@@ -20,7 +20,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'target'),
-    publicPath: '',
+    publicPath: path.join(__dirname, 'target'),
     filename: '[name].js',
     library: ['Example', '[name]'],
     pathInfo: true
@@ -29,14 +29,15 @@ module.exports = {
   module: {
     loaders: [
       {test: /\.js?$/, exclude: /node_modules/, loader: 'babel?cacheDirectory'},
-      { test: /\.css$/, loader: "style-loader!css-loader" },
+      { test: /\.css$/,   loader: "style-loader!css-loader" },
      { test: /\.woff$/,   loader: "url-loader?limit=10000&minetype=application/font-woff" },
-     { test: /\.woff2$/,   loader: "url-loader?limit=10000&minetype=application/font-woff" },
+     { test: /\.woff2$/,  loader: "url-loader?limit=10000&minetype=application/font-woff" },
      { test: /\.ttf$/,    loader: "file-loader" },
      { test: /\.eot$/,    loader: "file-loader" },
      { test: /\.svg$/,    loader: "file-loader" },
-     { test: /\.png$/, loader: "file-loader" },
-     { test: /\.jpg$/, loader: "file-loader" },
+     { test: /\.png$/,    loader: "file-loader" },
+     { test: /\.jpg$/,    loader: "file-loader" },
+     {test: /\.less$/,    loader: "style!css!less"}
     ]
   },
   plugins: [
@@ -51,7 +52,7 @@ module.exports = {
   debug: true,
   devtool: 'eval-cheap-module-source-map',
   devServer: {
-    contentBase: './tmp',
+    contentBase: './target',
     historyApiFallback: true
   }
 };

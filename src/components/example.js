@@ -28,6 +28,7 @@ class ExampleComponent extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <div className='container landingContainer span5 fill'>
         <NotionNavBar name='Notion' style='fixedTop'router={this.state.router}/>

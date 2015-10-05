@@ -31,6 +31,7 @@ class NotebookView extends React.Component {
     this.renderNotebooks = this.renderNotebooks.bind(this);
     this.handleVisibleChanged = this.handleVisibleChanged.bind(this);
     this.onNotebookClick = this.onNotebookClick.bind(this);
+    this.onOpenNotebook = this.onOpenNotebook.bind(this);
   }
 
   componentWillMount() {
@@ -95,6 +96,10 @@ class NotebookView extends React.Component {
     this.setState({currentSelectedNotebook:index-1, detailDockVisable:true});
   }
 
+  onNoteClick(index){
+    location = `/notebooks/${this.state.currentSelectedNotebook}/note/${index}/edit`;
+  }
+
   renderNotes(notebook){
     if(notebook != null){
       if(notebook.notes.length == 0){
@@ -105,7 +110,7 @@ class NotebookView extends React.Component {
       let first = chunks[0];
       let notebookChildren = _.map(first, (note,index)=>{
         return (
-          <Col xs={12} md={4} className='notecol'>
+          <Col xs={12} md={4} className='notecol' onClick={this.onNoteClick.bind(this,index)}>
             <Panel header={<h3>{note.title}</h3>} bsStyle='primary'>
               {note.preview}
             </Panel>
@@ -114,6 +119,11 @@ class NotebookView extends React.Component {
       });
       return notebookChildren;
     }
+  }
+
+  onOpenNotebook(){
+    let location = `/notebooks/${this.state.currentSelectedNotebook}`;
+    window.location.replace(location);
   }
 
   renderDetailDock(){
@@ -133,7 +143,7 @@ class NotebookView extends React.Component {
                 </Row>
                 <Label className="center" bsStyle="default">{notebook.lastEdit}</Label>
                   <ButtonToolbar className='detailToolbar'>
-                      <Button className='openButton'>
+                      <Button className='openButton' onClick={this.onOpenNotebook}>
                         Open
                       </Button>
                       <Button className='manageButton'>
