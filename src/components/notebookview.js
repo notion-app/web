@@ -5,7 +5,8 @@ import WindowStore from 'stores/WindowStore';
 import WindowActions from 'actions/WindowActions';
 import NotebookActions from 'actions/NotebookActions';
 import NotionNavBar from 'components/ui/notionNavBar';
-import { Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
+import AddNotebookModal from 'components/ui/addNewNotebookModal';
+import { Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label, Modal } from 'react-bootstrap';
 import _ from 'lodash';
 import Dock from 'react-dock';
 
@@ -75,7 +76,6 @@ class NotebookView extends React.Component {
   onChange(){
     this.setState({noteBookStore:NotebookStore.getState()});
   }
-
 
   static getStores(props) {
     return [NotebookStore, WindowStore];
@@ -174,14 +174,26 @@ class NotebookView extends React.Component {
     let notebookViews = _.map(chunks, (notebooks,index) =>{
       let notebookChildren = _.map(notebooks, (notebook,notebookIndex)=>{
         childKey = childKey+1;
-        return (
-          <Col xs={12} md={4} key={childKey} className='notebookcol'>
-            <Panel header={ <h3> {notebook.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary" onClick={this.onNotebookClick.bind(this,childKey)}>
-              <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
-              <Label className="center" bsStyle="default">{notebook.lastEdit}</Label>
-            </Panel>
-          </Col>
-        );
+        
+        if (notebook.title == '__add_new_notebook__'){
+          return (
+            <Col xs={12} md={4} key={childKey} className='notebookcol'>
+              <Panel header={ <h3> Add New Notebook </h3> } bsStyle="default">
+              <AddNotebookModal />
+              </Panel>
+            </Col>
+          );
+        }
+        else {
+          return (
+            <Col xs={12} md={4} key={childKey} className='notebookcol'>
+              <Panel header={ <h3> {notebook.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary" onClick={this.onNotebookClick.bind(this,childKey)}>
+                <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
+                <Label className="center" bsStyle="default">{notebook.lastEdit}</Label>
+              </Panel>
+            </Col>
+          );
+        }
       });
       rowKey = rowKey+1;
       return (
