@@ -168,13 +168,19 @@ class NotebookView extends React.Component {
     if(this.state.noteBookStore.notebooks.length == 0){
       return(null);
     }
-    let chunks = this.state.windowStore.width <= 991? _.chunk(this.state.noteBookStore.notebooks,2): _.chunk(this.state.noteBookStore.notebooks,3);
+    let emptyNotebookHolder = {
+      title: '__add_new_notebook__',
+      lastEdit: '__NA__,',
+      notes:[],
+    };
+    let notebooks = this.state.noteBookStore.notebooks.concat(emptyNotebookHolder);
+    let chunks = this.state.windowStore.width <= 991? _.chunk(notebooks,2): _.chunk(notebooks,3);
     let childKey = 0;
     let rowKey = 0;
     let notebookViews = _.map(chunks, (notebooks,index) =>{
       let notebookChildren = _.map(notebooks, (notebook,notebookIndex)=>{
         childKey = childKey+1;
-        
+
         if (notebook.title == '__add_new_notebook__'){
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>

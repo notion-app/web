@@ -120,14 +120,13 @@ class NotebookActions {
             preview:'This is a preview'
           },
         ],
-      },
-      {
-        title: '__add_new_notebook__',
-        lastEdit: '__NA__,',
-        notes:[],
       }
     ]
     this.dispatch(notebooks);
+  }
+
+  addNotebook(notebook){
+    this.dispatch(notebook);
   }
 
 }

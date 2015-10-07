@@ -4,6 +4,13 @@
 	margin-left: 6em !important;
 }
 
+.new-notebook-icon {
+  height: 13.6em !important;
+  width: 14em !important;
+  margin-left: 4em !important;
+}
+<style>…</style>
+
 .addNotebookButton {
   margin-top: 1em !important;
 }
@@ -92,6 +99,10 @@ width: 100px;
 		height: 12em !important;
 		width: 12em !important;
 		margin-left: 3em !important;
+	}
+
+	.new-notebook-icon{
+
 	}
 
 	.notebookimg {

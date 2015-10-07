@@ -10,6 +10,11 @@ class NotebookStore {
   onFetchNotebooks(loadedNotebooks){
     this.notebooks = this.notebooks.concat(loadedNotebooks);
   }
+
+  @bind(actions.addNotebook)
+  onAddNotebook(notebook){
+    this.notebooks = this.notebooks.concat(notebook);
+  }
 }
 
 export default NotebookStore;

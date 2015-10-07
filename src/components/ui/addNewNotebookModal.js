@@ -1,26 +1,43 @@
 import React from 'react';
 import { Button, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Modal, Popover, Tooltip, OverlayTrigger, Thumbnail} from 'react-bootstrap';
 import CoursesActions from 'actions/CoursesActions';
+import NotebookActions from 'actions/NotebookActions';
 
 
 var Typeahead = require('react-typeahead').Typeahead;
 
-const AddNotebookModal = React.createClass({
+class AddNotebookModal  extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      showModal:false,
+      selectedOption: null
+    }
+    this.close = this.close.bind(this);
+    this.open =  this.open.bind(this);
+    this.onOptionSelected = this.onOptionSelected.bind(this);
+  }
 
-  getInitialState() {
-    return { showModal: false };
-  },
+  onOptionSelected(option){
+    this.setState({selectedOption:option});
+  }
 
   close() {
+    let newNoteBook = {
+      title: this.state.selectedOption,
+      lastEdit: 'Last edited: 1:47 pm',
+      notes:[]
+    }
+    NotebookActions.addNotebook(newNoteBook);
     this.setState({ showModal: false });
-  },
+  }
 
   open() {
     this.setState({ showModal: true });
-  },
+  }
 
   getAllCourses() {
-    return ['CS 180',        
+    return ['CS 180',
             'CS 182',
             'CS 240',
             'CS 250',
@@ -40,7 +57,7 @@ const AddNotebookModal = React.createClass({
             'MA 251',
             'MA 252',
             'MA 265'];
-    /*       
+    /*
     CoursesActions.fetchCourses();
 
     var allCourses = [];
@@ -49,7 +66,7 @@ const AddNotebookModal = React.createClass({
     });
 
     return allCourses; */
-  },
+  }
 
   render() {
 
@@ -58,14 +75,14 @@ const AddNotebookModal = React.createClass({
 
     return (
       <div>
-        <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" onClick={this.open} src="https://cdn0.iconfinder.com/data/icons/math-business-icon-set/93/1_1-512.png"/>
+        <Thumbnail className="new-notebook-icon" href="#" alt="171x180" bsSize="xsmall" onClick={this.open} src="https://cdn0.iconfinder.com/data/icons/math-business-icon-set/93/1_1-512.png"/>
 
         <Modal show={this.state.showModal} onHide={this.close}>
           <Modal.Header closeButton>
             <Modal.Title>Add New Notebook</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Typeahead options={this.getAllCourses()} maxVisible={5} />
+            <Typeahead options={this.getAllCourses()} maxVisible={5} onOptionSelected={this.onOptionSelected}/>
             <Button className="addNotebookButton" bsStyle="success" onClick={this.close}>Add Notebook</Button>
           </Modal.Body>
           <Modal.Footer>
@@ -75,6 +92,6 @@ const AddNotebookModal = React.createClass({
       </div>
     );
   }
-});
+}
 
 export default AddNotebookModal
