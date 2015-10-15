@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Modal, Popover, Tooltip, OverlayTrigger, Thumbnail} from 'react-bootstrap';
 import CoursesActions from 'actions/CoursesActions';
 import NotebookActions from 'actions/NotebookActions';
-
+import CoursesStore from 'stores/CoursesStore';
 
 var Typeahead = require('react-typeahead').Typeahead;
 
@@ -11,8 +11,12 @@ class AddNotebookModal  extends React.Component{
     super(props);
     this.state = {
       showModal:false,
-      selectedOption: null
-    }
+      selectedOption: null,
+      coursesStore: {
+        courses:[]
+      },
+    }    
+    this.onChange = this.onChange.bind(this);
     this.close = this.close.bind(this);
     this.open =  this.open.bind(this);
     this.onOptionSelected = this.onOptionSelected.bind(this);
@@ -36,36 +40,29 @@ class AddNotebookModal  extends React.Component{
     this.setState({ showModal: true });
   }
 
-  getAllCourses() {
-    return ['CS 180',
-            'CS 182',
-            'CS 240',
-            'CS 250',
-            'CS 251',
-            'CS 252',
-            'CS 308',
-            'CS 352',
-            'CS 352',
-            'CS 348',
-            'CS 408',
-            'CS 490',
-            'ECON 251',
-            'ECON 252',
-            'ECON 451',
-            'ECON 471',
-            'ECON 490',
-            'MA 251',
-            'MA 252',
-            'MA 265'];
-    /*
+  onChange(){
+    this.setState({coursesStore:CoursesStore.getState()});
+  }
+
+  componentDidMount(){    
+    CoursesStore.listen(this.onChange);
     CoursesActions.fetchCourses();
+  }
+
+  getAllCourses() {
+    
+    if(this.state.coursesStore.courses.length == 0){
+      return(null);
+    }
+
+    let courses = this.state.coursesStore.courses;
 
     var allCourses = [];
     let coursesViews = _.map(courses, (course) => {
       allCourses.push(course.title);
     });
 
-    return allCourses; */
+    return allCourses; 
   }
 
   render() {
