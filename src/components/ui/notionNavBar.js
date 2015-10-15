@@ -59,7 +59,7 @@ class NotionNavBar extends React.Component {
   }
 
   renderSidebarContent() {
-    let authInfo = LoginManager.getAuthInfo()
+    let authInfo = LoginManager.getAuthInfo();
     return (
       <div>
           <span className="glyphicon glyphicon-menu-hamburger hamburger-icon" onClick={this.openSidebar}/>
@@ -69,7 +69,7 @@ class NotionNavBar extends React.Component {
          			<div className="profile-sidebar">
                 <span className="glyphicon glyphicon-remove close-icon" onClick={this.closeSidebar}></span>
          				<div className="profile-userpic">
-                  <img src={authInfo.fbData.profileImage} className="img-responsive" alt=""/>
+                  <img src={authInfo.fbData.profile_pic} className="img-responsive" alt=""/>
 
          				</div>
 

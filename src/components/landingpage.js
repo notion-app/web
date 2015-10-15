@@ -83,9 +83,8 @@ class LandingPageComponent extends React.Component {
     } else if(check.loggedIn == false) {
       return this.renderRegistration();
     } else {
-      var router = this.context.router;
       window.location.replace('/notebooks');
-      return (null);
+      return(null);
     }
   }
 

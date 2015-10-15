@@ -13,7 +13,7 @@ class LoginStore {
 
   @bind(actions.logout)
   logout() {
-    
+
   }
 }
 
