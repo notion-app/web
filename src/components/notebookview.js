@@ -6,9 +6,11 @@ import WindowActions from 'actions/WindowActions';
 import NotebookActions from 'actions/NotebookActions';
 import NotionNavBar from 'components/ui/notionNavBar';
 import AddNotebookModal from 'components/ui/addNewNotebookModal';
+import ChooseSchoolModal from 'components/ui/ChooseSchoolModal';
 import { Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label, Modal } from 'react-bootstrap';
 import _ from 'lodash';
 import Dock from 'react-dock';
+import LoginManager from 'util/LoginManager';
 
 require('../css/landingpage.css');
 require('../css/notebookview.css');
@@ -17,6 +19,7 @@ class NotebookView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: LoginManager.getAuthInfo(),
       noteBookStore: {
         notebooks:[]
       },
@@ -213,8 +216,10 @@ class NotebookView extends React.Component {
 
   render() {
     let notebookViews = this.renderNotebooks();
+    let hasSchoolId = this.state.user.fbData.school_id !== "";
     return (
       <div className='container landingContainer span5 fill'>
+        {hasSchoolId? null: <ChooseSchoolModal/>}
         <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>
         {this.renderDetailDock()}
         <Grid>

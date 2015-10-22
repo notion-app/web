@@ -6,6 +6,10 @@ module.exports = {
     return JSON.parse(authInfo);
   },
 
+  setAuthInfo(authInfo){
+    localStorage.setItem('authInfo', JSON.stringify(authInfo));
+  },
+
   login(fbData) {
     let authInfo = {loggedIn:true,fbData:fbData};
     localStorage.setItem('authInfo', JSON.stringify(authInfo));

@@ -1,6 +1,7 @@
 import flux from 'control';
 import {createActions} from 'alt/utils/decorators';
 import LoginManager from 'util/LoginManager';
+import API_ROOT from 'util/RouteDetails';
 import $ from 'jquery';
 
 @createActions(flux)
@@ -15,8 +16,9 @@ class LoginActions {
       'access_token': fbInfo.accessToken
     };
 
+    let path = `${API_ROOT}/login`
     $.ajax({
-      url:'http://notion-api-dev.herokuapp.com/v1/login',
+      url:path,
       crossDomain:true,
       method:'POST',
       data:JSON.stringify(postBody),
