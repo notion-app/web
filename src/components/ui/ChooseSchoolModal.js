@@ -32,12 +32,12 @@ class ChooseSchoolModal  extends React.Component{
     });
     let authInfo = LoginManager.getAuthInfo();
     SchoolActions.setUserSchool(authInfo.fbData.id, authInfo.fbData.fb_auth_token, chosenSchool.id).then(()=>{
-      console.log('done');
+      console.log('DONE CHOOSING SCHOOL');
     });
     authInfo.fbData.school_id = chosenSchool.id;
 
 
-    LoginManager.setAuthInfo(authInfo);
+    LoginManager.login(authInfo);
     this.setState({ showModal: false });
   }
 

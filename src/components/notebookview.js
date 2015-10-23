@@ -45,8 +45,6 @@ class NotebookView extends React.Component {
   componentDidMount(){
     NotebookStore.listen(this.onChange);
     WindowStore.listen(this.onWindowChange);
-    console.log('token');
-    console.log(this.state.user.fbData.fb_auth_token)
     NotebookActions.fetchNotebooks(this.state.user.fbData.id, this.state.user.fbData.fb_auth_token);
     window.addEventListener("resize", this.updateWindowDimensions);
   }
@@ -181,7 +179,6 @@ class NotebookView extends React.Component {
     let notebookViews = _.map(chunks, (notebooks,index) =>{
       let notebookChildren = _.map(notebooks, (notebook,notebookIndex)=>{
         childKey = childKey+1;
-        console.log(notebook)
         if (notebook.name == '__add_new_notebook__'){
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>

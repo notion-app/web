@@ -8,7 +8,7 @@ class SchoolStore {
 
   @bind(actions.fetchSchools)
   onFetchSchools(loadedSchools){
-    this.schools = this.schools.concat(loadedSchools.schools);
+    this.schools = this.schools.concat(loadedSchools);
   }
 
   @bind(actions.setUserSchool)
