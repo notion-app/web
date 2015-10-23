@@ -45,7 +45,7 @@ class NotebookView extends React.Component {
   componentDidMount(){
     NotebookStore.listen(this.onChange);
     WindowStore.listen(this.onWindowChange);
-    NotebookActions.fetchNotebooks();
+    NotebookActions.fetchNotebooks(this.state.user.fbData.id, this.state.user.fbData.fb_auth_token);
     window.addEventListener("resize", this.updateWindowDimensions);
   }
 
@@ -168,9 +168,7 @@ class NotebookView extends React.Component {
 
 
   renderNotebooks() {
-    if(this.state.noteBookStore.notebooks.length == 0){
-      return(null);
-    }
+
     let emptyNotebookHolder = {
       title: '__add_new_notebook__',
       lastEdit: '__NA__,',
@@ -196,7 +194,7 @@ class NotebookView extends React.Component {
         else {
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel header={ <h3> {notebook.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary" onClick={this.onNotebookClick.bind(this,childKey)}>
+              <Panel header={ <h3> {notebook.name}  <Glyphicon glyph="star" /></h3> } bsStyle="primary" onClick={this.onNotebookClick.bind(this,childKey)}>
                 <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
                 <Label className="center" bsStyle="default">{notebook.lastEdit}</Label>
               </Panel>

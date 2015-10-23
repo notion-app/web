@@ -8,11 +8,16 @@ class NotebookStore {
 
   @bind(actions.fetchNotebooks)
   onFetchNotebooks(loadedNotebooks){
-    this.notebooks = this.notebooks.concat(loadedNotebooks);
+    this.notebooks = this.notebooks.concat(loadedNotebooks.subscriptions);
   }
 
   @bind(actions.addNotebook)
   onAddNotebook(notebook){
+    this.notebooks = this.notebooks.concat(notebook);
+  }
+
+  @bind(actions.subscribeToNotebook)
+  onSubscribe(notebook){
     this.notebooks = this.notebooks.concat(notebook);
   }
 }

@@ -30,10 +30,6 @@ class SchoolActions {
     };
     return $.ajax({
       url:path,
-      headers: {
-        'Access-Control-Request-Headers': '*',
-        'Access-Control-Request-Method': '*',
-      },
       crossDomain:true,
       method:'PUT',
       data:JSON.stringify(body),

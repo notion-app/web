@@ -1,5 +1,7 @@
 import flux from 'control';
 import {createActions} from 'alt/utils/decorators';
+import API_ROOT from 'util/RouteDetails';
+import $ from 'jquery';
 
 
 @createActions(flux)
@@ -7,70 +9,32 @@ class CoursesActions {
   constructor() {
   }
 
-  fetchCourses(){
-    let courses = [
-      {
-        title: 'CS 180',        
-      },
-      {
-        title: 'CS 182',
-      },
-      {
-        title: 'CS 240',
-      },
-      {
-        title: 'CS 250',
-      },
-      {
-        title: 'CS 251',
-      },
-      {
-        title: 'CS 252',
-      },
-      {
-        title: 'CS 308',
-      },
-      {
-        title: 'CS 352',
-      },
-      {
-        title: 'CS 352',
-      },
-      {
-        title: 'CS 348',
-      },
-      {
-        title: 'CS 408',
-      },
-      {
-        title: 'CS 490',
-      },
-      {
-        title: 'ECON 251',
-      },
-      {
-        title: 'ECON 252',
-      },
-      {
-        title: 'ECON 451',
-      },
-      {
-        title: 'ECON 471',
-      },
-      {
-        title: 'ECON 490',
-      },      
-      {
-        title: 'MA 251',
-      },    
-      {
-        title: 'MA 252',
-      },    
-      {
-        title: 'MA 265',
-      },
-    ]
-    this.dispatch(courses);
+  fetchCourses(school_id){
+    let path = `${API_ROOT}/school/${school_id}/course`;
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'GET',
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done ((courses) => {
+      this.dispatch(courses);
+    });
+  }
+
+  fetchSections(school_id,course_id){
+    let path = `${API_ROOT}/school/${school_id}/course/${course_id}/section`;
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'GET',
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done ((sections) => {
+      this.dispatch(sections);
+    });
   }
 
 }
