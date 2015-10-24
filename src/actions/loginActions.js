@@ -27,6 +27,7 @@ class LoginActions {
         console.log(error);
       }
     }).done ((loginData) => {
+      console.log(loginData.fb_auth_token);
       LoginManager.login(loginData);
       this.dispatch(LoginManager.getAuthInfo());
     });
