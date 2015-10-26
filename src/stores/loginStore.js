@@ -15,6 +15,16 @@ class LoginStore {
   logout() {
 
   }
+
+  @bind(actions.setAuthInfo)
+  onSetAuthInfo(auth) {
+    this.userAuth = auth;
+  }
+
+  @bind(actions.getAuthInfo)
+    onGetAuthInfo(auth){
+      this.userAuth = auth;
+    }
 }
 
 export default LoginStore;

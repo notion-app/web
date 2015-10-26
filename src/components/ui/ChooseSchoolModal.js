@@ -3,6 +3,7 @@ import { Button, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Modal, Popover, Too
 import SchoolActions from 'actions/SchoolActions';
 import SchoolStore from 'stores/SchoolStore';
 import LoginManager from 'util/LoginManager';
+import LoginActions from 'actions/loginActions';
 
 var Typeahead = require('react-typeahead').Typeahead;
 
@@ -35,9 +36,7 @@ class ChooseSchoolModal  extends React.Component{
       console.log('DONE CHOOSING SCHOOL');
     });
     authInfo.fbData.school_id = chosenSchool.id;
-
-
-    LoginManager.login(authInfo);
+    LoginActions.setAuthInfo(authInfo);
     this.setState({ showModal: false });
   }
 

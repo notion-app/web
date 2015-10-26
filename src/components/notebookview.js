@@ -36,6 +36,7 @@ class NotebookView extends React.Component {
     this.handleVisibleChanged = this.handleVisibleChanged.bind(this);
     this.onNotebookClick = this.onNotebookClick.bind(this);
     this.onOpenNotebook = this.onOpenNotebook.bind(this);
+    this.onNotebookDeleteClick = this.onNotebookDeleteClick.bind(this);
   }
 
   componentWillMount() {
@@ -43,16 +44,16 @@ class NotebookView extends React.Component {
   }
 
   componentDidMount(){
-    NotebookStore.listen(this.onChange);
+    let authInfo = LoginManager.getAuthInfo()
+    NotebookStore.listen(this.onChange)
     WindowStore.listen(this.onWindowChange);
-    NotebookActions.fetchNotebooks(this.state.user.fbData.id, this.state.user.fbData.fb_auth_token);
     window.addEventListener("resize", this.updateWindowDimensions);
+    NotebookActions.fetchNotebooks(authInfo.fbData.id, this.state.user.fbData.fb_auth_token);
   }
 
   shouldComponentUpdate(nextProps,nextState){;
-    //console.log(this.state);
-    //console.log(nextState);
-    if(this.state.noteBookStore.notebooks.length != nextState.noteBookStore.notebooks.length ){
+    // HACK
+    if( (this.state.noteBookStore.notebooks.length !== nextState.noteBookStore.notebooks.length) || (this.state.noteBookStore.notebooks.length === nextState.noteBookStore.notebooks.length)  ){
       return true
     }
 
@@ -64,7 +65,6 @@ class NotebookView extends React.Component {
       return true;
 
     }
-
     return false;
   }
 
@@ -102,6 +102,17 @@ class NotebookView extends React.Component {
   onNoteClick(index){
     location = `/notebooks/${this.state.currentSelectedNotebook}/note/${index}/edit`;
   }
+
+  onNotebookDeleteClick(index){
+    let notebook = this.state.noteBookStore.notebooks[index-1];
+    console.log(notebook)
+    console.log(this.state.user);
+    let  user_id = this.state.user.fbData.id;
+    let token = this.state.user.fbData.fb_auth_token;
+    NotebookActions.unsubscribeToNotebook(user_id, token, notebook.notebook_id);
+
+  }
+
 
   renderNotes(notebook){
     if(notebook != null){
@@ -168,10 +179,10 @@ class NotebookView extends React.Component {
 
 
   renderNotebooks() {
-
     let emptyNotebookHolder = {
       name: '__add_new_notebook__',
     };
+
     let notebooks = this.state.noteBookStore.notebooks.concat(emptyNotebookHolder);
     let chunks = this.state.windowStore.width <= 991? _.chunk(notebooks,2): _.chunk(notebooks,3);
     let childKey = 0;
@@ -191,8 +202,8 @@ class NotebookView extends React.Component {
         else {
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel header={ <h3> {notebook.name}  <Glyphicon glyph="star" /></h3> } bsStyle="primary" onClick={this.onNotebookClick.bind(this,childKey)}>
-                <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
+              <Panel header={ <h3> {notebook.name}  <Glyphicon glyph="star" /><Glyphicon className="pull-right removeNotebookIcon" glyph="remove" onClick={this.onNotebookDeleteClick.bind(this,childKey)}/></h3> } bsStyle="primary">
+                <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png" onClick={this.onNotebookClick.bind(this,childKey)}/>
                 <Label className="center" bsStyle="default">{notebook.lastEdit}</Label>
               </Panel>
             </Col>

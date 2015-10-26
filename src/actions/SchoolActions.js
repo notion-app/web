@@ -2,6 +2,7 @@ import flux from 'control';
 import {createActions} from 'alt/utils/decorators';
 import API_ROOT from 'util/RouteDetails';
 import $ from 'jquery';
+import LoginManager from 'util/LoginManager';
 
 
 @createActions(flux)
@@ -24,6 +25,9 @@ class SchoolActions {
   }
 
   setUserSchool(user_id,token, school_id){
+    let authInfo = LoginManager.getAuthInfo();
+    authInfo.fbData.school_id = school_id;
+    LoginManager.login(authInfo);
     let path = `${API_ROOT}/user/${user_id}/school?token=${token}`;
     let body = {
       'school':school_id

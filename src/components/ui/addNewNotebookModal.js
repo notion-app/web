@@ -1,9 +1,11 @@
 import React from 'react';
-import { Button, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Modal, Popover, Tooltip, OverlayTrigger, Thumbnail, DropdownButton, MenuItem} from 'react-bootstrap';
+import { Input, Button, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Modal, Popover, Tooltip, OverlayTrigger, Thumbnail, DropdownButton, MenuItem} from 'react-bootstrap';
 import CoursesActions from 'actions/CoursesActions';
 import NotebookActions from 'actions/NotebookActions';
 import CoursesStore from 'stores/CoursesStore';
 import LoginManager from 'util/LoginManager';
+import LoginActions from 'actions/loginActions';
+import LoginStore from 'stores/loginStore';
 import _ from 'lodash';
 
 var Typeahead = require('react-typeahead').Typeahead;
@@ -12,11 +14,12 @@ class AddNotebookModal  extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      notebookName:'',
       showModal:false,
       selectedOption: null,
       selectedSection:"Sections",
       selectedSectionId:-1,
-      authInfo: LoginManager.getAuthInfo(),
+      authInfo: null,
       coursesStore: {
         courses:[]
       },
@@ -27,6 +30,19 @@ class AddNotebookModal  extends React.Component{
     this.onOptionSelected = this.onOptionSelected.bind(this);
     this.renderSectionsDropDown = this.renderSectionsDropDown.bind(this);
     this.onSectionSelected = this.onSectionSelected.bind(this);
+    this.onAuthChange = this.onAuthChange.bind(this);
+    this.validateName = this.validateName.bind(this);
+    this.onNameChange = this.onNameChange.bind(this);
+  }
+
+  validateName(){
+    let length = this.state.notebookName.length;
+    if(length >0) return 'success';
+    else return 'error';
+  }
+
+  onNameChange(){
+    this.setState({notebookName:this.refs.input.getValue()});
   }
 
   onOptionSelected(option){
@@ -34,7 +50,7 @@ class AddNotebookModal  extends React.Component{
       return(_.includes(option, course.name))
 
     });
-    CoursesActions.fetchSections(this.state.authInfo.fbData.school_id,course.id);
+    CoursesActions.fetchSections(this.state.authInfo.userAuth.fbData.school_id,course.id);
     this.setState({selectedOption:option, selectedSectionId:-1, selectedSection:'Sections'});
   }
 
@@ -44,13 +60,15 @@ class AddNotebookModal  extends React.Component{
 
   }
 
+
   close() {
     let section = this.state.coursesStore.sections[this.state.selectedSectionId];
-    let user_id = this.state.authInfo.fbData.id;
-    let token = this.state.authInfo.fbData.fb_auth_token;
+    let user_id = this.state.authInfo.userAuth.fbData.id;
+    let token = this.state.authInfo.userAuth.fbData.fb_auth_token;
     let notebook_id = section.notebook_id;
+    let name = this.state.notebookName;
 
-    NotebookActions.subscribeToNotebook(user_id,token,notebook_id);
+    NotebookActions.subscribeToNotebook(user_id,token,notebook_id, name);
     this.setState({ showModal: false });
   }
 
@@ -62,9 +80,18 @@ class AddNotebookModal  extends React.Component{
     this.setState({coursesStore:CoursesStore.getState()});
   }
 
+  onAuthChange(){
+    let authInfo = LoginStore.getState();
+    CoursesActions.fetchCourses(authInfo.userAuth.fbData.school_id );
+    this.setState({authInfo:authInfo});
+  }
+
   componentDidMount(){
     CoursesStore.listen(this.onChange);
-    CoursesActions.fetchCourses(this.state.authInfo.fbData.school_id );
+    LoginStore.listen(this.onAuthChange);
+    window.setTimeout(()=> {
+      LoginActions.getAuthInfo();
+    },1000)
   }
 
   getAllCourses() {
@@ -91,9 +118,22 @@ class AddNotebookModal  extends React.Component{
       )
     });
     return (
-      <DropdownButton id='sectionDropdown' bsStyle='default' title={this.state.selectedSection} onSelect={this.onSectionSelected}>
-        {menuItems}
-      </DropdownButton>
+      <div>
+        <DropdownButton id='sectionDropdown' bsStyle='default' title={this.state.selectedSection} onSelect={this.onSectionSelected}>
+          {menuItems}
+        </DropdownButton>
+        <br />
+        <Input
+          type="text"
+          value={this.state.notebookName}
+          label="Notebook name"
+          bsStyle={this.validateName()}
+          hasFeedback
+          ref="input"
+          groupClassName="group-class"
+          labelClassName="label-class"
+          onChange={this.onNameChange} />
+      </div>
     )
 
   }
@@ -109,6 +149,7 @@ class AddNotebookModal  extends React.Component{
           </Modal.Header>
           <Modal.Body>
             <Typeahead options={this.getAllCourses()} maxVisible={5} onOptionSelected={this.onOptionSelected}/>
+            <br />
             {this.state.selectedOption? this.renderSectionsDropDown():null}
           </Modal.Body>
           <Modal.Footer>

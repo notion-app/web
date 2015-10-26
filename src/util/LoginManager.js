@@ -6,6 +6,10 @@ module.exports = {
     return JSON.parse(authInfo);
   },
 
+  setAuthInfo(authInfo) {
+    localStorage.clear();
+    localStorage.setItem('authInfo', JSON.stringify(authInfo));
+  },
 
   login(fbData) {
     localStorage.clear();

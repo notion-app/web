@@ -11,7 +11,7 @@ class CoursesActions {
 
   fetchCourses(school_id){
     let path = `${API_ROOT}/school/${school_id}/course`;
-    $.ajax({
+    return $.ajax({
       url:path,
       crossDomain:true,
       method:'GET',

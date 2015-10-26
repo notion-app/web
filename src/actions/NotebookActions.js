@@ -29,10 +29,10 @@ class NotebookActions {
     this.dispatch(notebook);
   }
 
-  subscribeToNotebook(user_id, token, notebook_id){
+  subscribeToNotebook(user_id, token, notebook_id,name){
     let postBody = {
-      'notebook_id':notebook_id,
-      'name':'A dumb ass notebook'
+      notebook_id:notebook_id,
+      name:name,
     };
 
     let path = `${API_ROOT}/user/${user_id}/subscription?token=${token}`;
@@ -41,13 +41,29 @@ class NotebookActions {
       crossDomain:true,
       method:'POST',
       data:JSON.stringify(postBody),
-      dataType:"json",
       error: function(xhr,options,error){
-        console.log('JQ ERROR');
         console.log(error);
       }
     }).done ((notebook) => {
       this.dispatch(notebook);
+    });
+  }
+
+  unsubscribeToNotebook(user_id, token, notebook_id){
+    let path = `${API_ROOT}/user/${user_id}/subscription?token=${token}`;
+    let body = {
+      notebook_id:notebook_id
+    }
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'DELETE',
+      data:JSON.stringify(body),
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done(()=> {
+      this.dispatch(notebook_id);
     });
 
   }

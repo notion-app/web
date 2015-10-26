@@ -3,6 +3,7 @@ import {createActions} from 'alt/utils/decorators';
 import LoginManager from 'util/LoginManager';
 import API_ROOT from 'util/RouteDetails';
 import $ from 'jquery';
+import NotebookStore from 'stores/NotebookStore';
 
 @createActions(flux)
 class LoginActions {
@@ -27,10 +28,18 @@ class LoginActions {
         console.log(error);
       }
     }).done ((loginData) => {
-      console.log(loginData.fb_auth_token);
       LoginManager.login(loginData);
       this.dispatch(LoginManager.getAuthInfo());
     });
+  }
+
+  setAuthInfo(authInfo) {
+    LoginManager.setAuthInfo(authInfo);
+    this.dispatch(LoginManager.getAuthInfo());
+  }
+
+  getAuthInfo(){
+    this.dispatch(LoginManager.getAuthInfo());
   }
 
   logout() {
