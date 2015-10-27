@@ -10,7 +10,7 @@ var server = new WebpackDevServer(webpack(config), config.devServer);
 
 // Important part. Send down index.html for all requests
 server.use('/', function (req, resp, next) {
-  var opts = url.parse('http://localhost:8080');
+  var opts = url.parse('http://0.0.0.0:'+port);
   opts.method = req.method;
   opts.headers = req.headers;
 
@@ -42,6 +42,6 @@ server.use('/', function (req, resp, next) {
   }
 });
 
-server.listen(port, 'localhost', function() {
-  console.log('Listening on http://localhost:' + port);
+server.listen(port, '0.0.0.0', function() {
+  console.log('Listening on 0.0.0.0:' + port);
 });
