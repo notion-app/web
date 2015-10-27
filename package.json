@@ -43,13 +43,13 @@
     "react-router": "0.13.3",
     "style-loader": "^0.12.4",
     "url-loader": "^0.5.6",
-    "react-typeahead": "1.1.4"
-  },
-  "devDependencies": {
+    "react-typeahead": "1.1.4",
     "babel-core": "5.6.18",
     "babel-loader": "5.3.1",
     "html-webpack-plugin": "1.6.0",
     "webpack": "1.10.1",
     "webpack-dev-server": "1.10.1"
+  },
+  "devDependencies": {
   }
 }
