@@ -69,7 +69,7 @@ class ChooseSchoolModal  extends React.Component{
   }
 
   render() {
-
+    console.log(this.state);
     return (
       <div>
         <Modal show={this.state.showModal} onHide={this.close}>
