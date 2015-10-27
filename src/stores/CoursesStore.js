@@ -10,12 +10,12 @@ class CoursesStore {
 
   @bind(actions.fetchCourses)
   onFetchCourses(loadedCourses){
-    this.courses = _.uniq(_.union(this.courses, loadedCourses.courses), false, _.property('name'))
+    this.courses = _.uniq(_.union(this.courses, loadedCourses), false, _.property('name'))
   }
 
   @bind(actions.fetchSections)
   onFetchSections(loadSections){
-    this.sections = loadSections.sections;
+    this.sections = loadSections;
   }
 }
 
