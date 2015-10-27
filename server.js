@@ -1,28 +1,47 @@
-var express = require('express');
+var config = require('./webpack.config');
+var http = require('http');
 var path = require('path');
+var url = require('url');
 var webpack = require('webpack');
-var app = express();
+var WebpackDevServer = require('webpack-dev-server');
+var port = process.env.PORT || 5000;
 
-var isDevelopment = (process.env.NODE_ENV !== 'production');
-var static_path = path.join(__dirname, 'target');
+var server = new WebpackDevServer(webpack(config), config.devServer);
 
-app.use(express.static(static_path))
-  .get('/', function (req, res) {
-    res.sendFile('index.html', {
-      root: static_path
+// Important part. Send down index.html for all requests
+server.use('/', function (req, resp, next) {
+  var opts = url.parse('http://localhost:8080');
+  opts.method = req.method;
+  opts.headers = req.headers;
+
+  var myReq = http.request(opts, function (myRes) {
+    var statusCode = myRes.statusCode;
+    var headers = myRes.headers;
+    var location = headers.location;
+
+    if (200 !== statusCode) {
+      next();
+
+      return;
+    }
+
+    resp.writeHead(myRes.statusCode, myRes.headers);
+    myRes.on('error', function (err) {
+      next(err);
     });
-  }).listen(process.env.PORT || 8080, function (err) {
-    if (err) { console.log(err) };
-    console.log('Listening at localhost:8080');
+    myRes.pipe(resp);
+  });
+  myReq.on('error', function (err) {
+    next(err);
   });
 
-  var config = require('./webpack.config');
-  var WebpackDevServer = require('webpack-dev-server');
+  if (!req.readable) {
+    myReq.end();
+  } else {
+    req.pipe(myReq);
+  }
+});
 
-  new WebpackDevServer(webpack(config), {
-    publicPath: config.output.publicPath,
-    hot: true
-  }).listen(3000, 'localhost', function (err, result) {
-    if (err) { console.log(err) }
-    console.log('Listening at localhost:3000');
-  });
+server.listen(port, 'localhost', function() {
+  console.log('Listening on http://localhost:' + port);
+});
