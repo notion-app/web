@@ -221,6 +221,7 @@ class NotebookView extends React.Component {
   }
 
   render() {
+    console.log('he')
     let notebookViews = this.renderNotebooks();
     let hasSchoolId = this.state.user.fbData.school_id !== "";
     return (
