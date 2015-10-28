@@ -10,7 +10,7 @@ module.exports = {
   cache: true,
   entry: {
     module: path.join(srcPath, 'module.js'),
-    common: ['react', 'react-router', 'alt']
+    common: ['react', 'react-router', 'alt', 'react-bootstrap', 'lodash', 'jquery', 'marked', 'classnames']
   },
 
   resolve: {
@@ -20,7 +20,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'target'),
-    publicPath: "./",
+    publicPath: '/',
     filename: '[name].js',
     library: ['Example', '[name]'],
     pathInfo: true
@@ -52,7 +52,7 @@ module.exports = {
   debug: true,
   devtool: 'eval-cheap-module-source-map',
   devServer: {
-    contentBase: './target',
+    contentBase: "/target/",
     historyApiFallback: true
   }
 };

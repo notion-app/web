@@ -8,6 +8,11 @@
 	opacity: 0.6;
 }
 
+.addNewNotebookPanel {
+	width: 100%;
+	height:18.6em;
+}
+
 .new-notebook-icon {
   height: 13.6em !important;
   width: 14em !important;

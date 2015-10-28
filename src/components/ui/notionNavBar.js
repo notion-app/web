@@ -69,8 +69,7 @@ class NotionNavBar extends React.Component {
          			<div className="profile-sidebar">
                 <span className="glyphicon glyphicon-remove close-icon" onClick={this.closeSidebar}></span>
          				<div className="profile-userpic">
-                  <img src={authInfo.fbData.profile_pic} className="img-responsive" alt=""/>
-
+                  <img src={authInfo.fbData.fb_profile_pic} className="img-responsive" alt=""/>
          				</div>
 
          				<div className="profile-usertitle">

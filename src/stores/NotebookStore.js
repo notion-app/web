@@ -33,6 +33,12 @@ class NotebookStore {
     this.notebooks = this.notebooks;
 
   }
+
+  @bind(actions.updateNotebook)
+  onUpdateNotebook(notebook){
+    let index = _.findIndex(this.notebooks, {notebook_id: notebook.notebook_id});
+    this.notebooks[index] = notebook;
+  }
 }
 
 export default NotebookStore;
