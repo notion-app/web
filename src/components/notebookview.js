@@ -111,8 +111,6 @@ class NotebookView extends React.Component {
 
   onNotebookDeleteClick(index){
     let notebook = this.state.noteBookStore.notebooks[index-1];
-    console.log(notebook)
-    console.log(this.state.user);
     let  user_id = this.state.user.fbData.id;
     let token = this.state.user.fbData.fb_auth_token;
     NotebookActions.unsubscribeToNotebook(user_id, token, notebook.notebook_id);
@@ -160,7 +158,7 @@ class NotebookView extends React.Component {
         <div className='detailDock'>
           <Grid>
             <Col>
-              <Panel className='deatilPanel' header={ <h3> {notebook.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary">
+              <Panel className='deatilPanel' header={ <h3> {notebook.name}  <Glyphicon glyph="star" /></h3> } bsStyle="primary">
                 <Row className='center'>
                   <Thumbnail className="notebook-icon notebookimg img img-responsive" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
                 </Row>
@@ -211,7 +209,7 @@ class NotebookView extends React.Component {
         else {
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel header={ <h3> {notebook.name}  <Glyphicon glyph="star" /><Glyphicon className="pull-right removeNotebookIcon" glyph="remove" onClick={this.onNotebookDeleteClick.bind(this,childKey)}/></h3> } bsStyle="primary">
+              <Panel header={ <h3> {notebook.name} <Glyphicon className="pull-right removeNotebookIcon" glyph="remove" onClick={this.onNotebookDeleteClick.bind(this,childKey)}/> </h3> } bsStyle="primary">
                 <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png" onClick={this.onNotebookClick.bind(this,childKey)}/>
                 <Label className="center" bsStyle="default">{notebook.lastEdit}</Label>
               </Panel>

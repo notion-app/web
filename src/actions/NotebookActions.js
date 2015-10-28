@@ -68,6 +68,26 @@ class NotebookActions {
 
   }
 
+  updateNotebook(user_id, token, notebook_id, name){
+    let path = `${API_ROOT}/user/${user_id}/subscription?token=${token}`;
+    let body = {
+      notebook_id: notebook_id,
+      name:name
+    };
+
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'PUT',
+      data:JSON.stringify(body),
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done((notebook)=> {
+      this.dispatch(notebook);
+    });
+  }
+
 }
 
 export default NotebookActions;

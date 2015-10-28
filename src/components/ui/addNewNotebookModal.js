@@ -153,7 +153,7 @@ class AddNotebookModal  extends React.Component{
             {this.state.selectedOption? this.renderSectionsDropDown():null}
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.close}>Close</Button>
+            <Button onClick={this.close}>Add Notebook</Button>
           </Modal.Footer>
         </Modal>
       </div>
