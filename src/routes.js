@@ -6,11 +6,8 @@ import ExampleComponent from 'components/example';
 import NotebookView from 'components/notebookview';
 import NotesView from 'components/notesview'
 import NoteEditView from 'components/noteEditView'
-<<<<<<< HEAD
 import EditUserSettingsView from 'components/EditUserSettingsView';
-=======
 import ManageNotebookView from 'components/ManageNotebookView';
->>>>>>> master
 import App from 'components/app'
 
 
