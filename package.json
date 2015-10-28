@@ -4,7 +4,7 @@
   "description": "Webpack example",
   "main": "dist/index.js",
   "engines": {
-    "node": ">=0.10.32"
+    "node": ">=4.0"
   },
   "scripts": {
     "start": "npm build; node server.js",
