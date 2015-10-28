@@ -200,7 +200,7 @@ class NotebookView extends React.Component {
         if (notebook.name == '__add_new_notebook__'){
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel header={ <h3> Add New Notebook </h3> } bsStyle="default">
+              <Panel header={ <h3> Add New Notebook </h3> } bsStyle="default" className='addNewNotebookPanel'>
               <AddNotebookModal />
               </Panel>
             </Col>
