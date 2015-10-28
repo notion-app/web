@@ -1,16 +1,13 @@
 import React from 'react';
-import { Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label, Modal } from 'react-bootstrap';
-import CoursesActions from 'actions/CoursesActions';
-import NotebookActions from 'actions/NotebookActions';
-import CoursesStore from 'stores/CoursesStore';
-import NotebookStore from 'stores/NotebookStore';
-import LoginManager from 'util/LoginManager';
-import LoginActions from 'actions/loginActions';
-import LoginStore from 'stores/loginStore';
-import connectToStores from 'alt/utils/connectToStores';
+import {Input, Table, Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
 import _ from 'lodash';
+import NotionNavBar from 'components/ui/notionNavBar';
+import WindowStore from 'stores/WindowStore';
+import WindowActions from 'actions/WindowActions';
+import LoginManager from 'util/LoginManager';
+import NotebookStore from 'stores/NotebookStore';
+import NotebookActions from 'actions/NotebookActions';
 
-@connectToStores
 class EditUserSettingsView extends React.Component {
   constructor(props) {
     super(props);
@@ -25,42 +22,16 @@ class EditUserSettingsView extends React.Component {
         height:window.innerHeight
       }
     }
-    this.onChange = this.onChange.bind(this);
-    this.onWindowChange = this.onWindowChange.bind(this);
+    this.onNotebooksChange = this.onNotebooksChange.bind(this);
+    this.renderTableData = this.renderTableData.bind(this);
     this.renderNotebooks = this.renderNotebooks.bind(this);
-    this.handleVisibleChanged = this.handleVisibleChanged.bind(this);
-    this.onNotebookClick = this.onNotebookClick.bind(this);
-    this.onOpenNotebook = this.onOpenNotebook.bind(this);
-    this.onNotebookDeleteClick = this.onNotebookDeleteClick.bind(this);
-  }
-
-  componentWillMount() {
-      document.body.style.backgroundImage = null;
   }
 
   componentDidMount(){
-    let authInfo = LoginManager.getAuthInfo()
-    NotebookStore.listen(this.onChange)
     WindowStore.listen(this.onWindowChange);
     window.addEventListener("resize", this.updateWindowDimensions);
-    NotebookActions.fetchNotebooks(authInfo.fbData.id, this.state.user.fbData.fb_auth_token);
-  }
-
-  shouldComponentUpdate(nextProps,nextState){;
-    // HACK
-    if( (this.state.noteBookStore.notebooks.length !== nextState.noteBookStore.notebooks.length) || (this.state.noteBookStore.notebooks.length === nextState.noteBookStore.notebooks.length)  ){
-      return true
-    }
-
-    else if(this.state.detailDockVisable != nextState.detailDockVisable){
-      return true;
-    }
-
-    else if(this.state.windowStore.width != nextState.windowStore.width){
-      return true;
-
-    }
-    return false;
+    NotebookStore.listen(this.onNotebooksChange);
+    NotebookActions.fetchNotebooks(this.state.user.fbData.id, this.state.user.fbData.fb_auth_token);
   }
 
   onWindowChange(){
@@ -71,33 +42,62 @@ class EditUserSettingsView extends React.Component {
     WindowActions.setDimensions({width:window.innerWidth, height:window.innerHeight});
   }
 
-  onChange(){
-    this.setState({noteBookStore:NotebookStore.getState()});
+  renderNotebooks() {
+    let notebooks = this.state.noteBookStore.notebooks;
+    if (notebooks == null){
+      return null;
+    } else {
+      let notebookChildren = _.map(notebooks, (n,notebookIndex)=>{
+        return (
+          <tr>
+            <td>{n.course.name}</td>
+            <td>{n.course.number}</td>
+            <td>{n.section.crn}</td>
+            <td>{n.section.professor}</td>
+            <td>{`${n.section.semester} ${n.section.year}`}</td>
+            <td>{n.section.time}</td>
+          </tr>
+        );
+      });
+    }
   }
 
-  static getStores(props) {
-    return [NotebookStore, WindowStore];
-  }
+  renderTableData(){
+    let notebooks = this.state.noteBookStore.notebooks;
 
-  static getPropsFromStores(props) {
-    return NotebookStore.getState();
-  }
-
-  handleVisibleChanged(isVisible){
-    this.setState({ detailDockVisable:isVisible });
+    if(notebooks === undefined){
+      return null;
+    } else {
+      return (
+        <div>
+          <Panel header="Notebooks">
+            <Table striped bordered condensed hover responsive>
+            <thead>
+              <tr>
+                <th>Course Name</th>
+                <th>Course Number</th>
+                <th>CRN</th>
+                <th>Professor</th>
+                <th>Semester</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.renderNotebooks()}
+            </tbody>
+          </Table>
+        </Panel>
+      </div>
+      )
+    }
   }
 
   render() {
-    let notebookViews = this.renderNotebooks();
-    let hasSchoolId = this.state.user.fbData.school_id !== "";
+    let userSchoolId = this.state.user.fbData.school_id;
     return (
       <div className='container landingContainer span5 fill'>
-        {hasSchoolId? null: <ChooseSchoolModal/>}
         <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>
-        HELLO WORLD
-        <Grid>
-          HELLO WORLD
-        </Grid>
+          {this.renderTableData()}
       </div>
     );
   }
