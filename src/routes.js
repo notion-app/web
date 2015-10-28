@@ -6,6 +6,7 @@ import ExampleComponent from 'components/example';
 import NotebookView from 'components/notebookview';
 import NotesView from 'components/notesview'
 import NoteEditView from 'components/noteEditView'
+import ManageNotebookView from 'components/ManageNotebookView';
 import App from 'components/app'
 
 
@@ -16,6 +17,7 @@ const routes = (
     <Route name='notebooks' path='/notebooks' handler={NotebookView}/>
     <Route name='notes' path='/notebooks/:notebookId' handler={NotesView}/>
     <Route name='note edit' path='/notebooks/:notebookId/note/:noteId/edit' handler={NoteEditView}/>
+    <Route name='notebook manage' path='/notebooks/:notebookId/manage' handler={ManageNotebookView}/>
   </Route>
 );
 

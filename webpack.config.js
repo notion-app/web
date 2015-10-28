@@ -20,6 +20,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'target'),
+    publicPath: '/',
     filename: '[name].js',
     library: ['Example', '[name]'],
     pathInfo: true
@@ -51,7 +52,7 @@ module.exports = {
   debug: true,
   devtool: 'eval-cheap-module-source-map',
   devServer: {
-    contentBase: './target',
+    contentBase: "/target/",
     historyApiFallback: true
   }
 };

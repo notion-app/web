@@ -37,6 +37,7 @@ class NotebookView extends React.Component {
     this.onNotebookClick = this.onNotebookClick.bind(this);
     this.onOpenNotebook = this.onOpenNotebook.bind(this);
     this.onNotebookDeleteClick = this.onNotebookDeleteClick.bind(this);
+    this.onManageClick = this.onManageClick.bind(this);
   }
 
   componentWillMount() {
@@ -103,6 +104,11 @@ class NotebookView extends React.Component {
     location = `/notebooks/${this.state.currentSelectedNotebook}/note/${index}/edit`;
   }
 
+  onManageClick(){
+    let notebook = this.state.noteBookStore.notebooks[this.state.currentSelectedNotebook];
+    location = `/notebooks/${notebook.notebook_id}/manage`;
+  }
+
   onNotebookDeleteClick(index){
     let notebook = this.state.noteBookStore.notebooks[index-1];
     console.log(notebook)
@@ -115,6 +121,8 @@ class NotebookView extends React.Component {
 
 
   renderNotes(notebook){
+    return null;
+    /*
     if(notebook != null){
       if(notebook.notes.length == 0){
         return(null);
@@ -133,6 +141,7 @@ class NotebookView extends React.Component {
       });
       return notebookChildren;
     }
+    */
   }
 
   onOpenNotebook(){
@@ -160,7 +169,7 @@ class NotebookView extends React.Component {
                       <Button className='openButton' onClick={this.onOpenNotebook}>
                         Open
                       </Button>
-                      <Button className='manageButton'>
+                      <Button className='manageButton' onClick={this.onManageClick}>
                         Manage
                       </Button>
                   </ButtonToolbar>
@@ -221,7 +230,6 @@ class NotebookView extends React.Component {
   }
 
   render() {
-    console.log('he')
     let notebookViews = this.renderNotebooks();
     let hasSchoolId = this.state.user.fbData.school_id !== "";
     return (
