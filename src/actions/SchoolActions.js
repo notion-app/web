@@ -24,6 +24,21 @@ class SchoolActions {
     });
   }
 
+  fetchSchoolByID(id){
+    let path = `${API_ROOT}/school/${id}`
+    console.log(path);
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'GET',
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done ((school) => {
+      return school;
+    });
+  }
+
   setUserSchool(user_id,token, school_id){
     let authInfo = LoginManager.getAuthInfo();
     authInfo.fbData.school_id = school_id;
