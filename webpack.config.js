@@ -10,7 +10,7 @@ module.exports = {
   cache: true,
   entry: {
     module: path.join(srcPath, 'module.js'),
-    common: ['react', 'react-router', 'alt']
+    common: ['react', 'react-router', 'alt', 'lodash', 'react-router', 'react-bootstrap', 'react-dock']
   },
 
   resolve: {
@@ -41,7 +41,14 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
+    new webpack.optimize.CommonsChunkPlugin({
+      name:'common',
+      filename:'common.js',
+      async:true
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
     new HtmlWebpackPlugin({
       inject: true,
       template: 'src/index.html'
