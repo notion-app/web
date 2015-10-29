@@ -87,7 +87,7 @@ class NotionNavBar extends React.Component {
          							Notebooks </a>
          						</li>
          						<li>
-         							<a href="#">
+         							<a href="/editUserSettings">
          							<i className="glyphicon glyphicon-user"></i>
          							Account Settings </a>
          						</li>

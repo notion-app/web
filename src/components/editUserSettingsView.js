@@ -27,6 +27,11 @@ class EditUserSettingsView extends React.Component {
     this.renderNotebooks = this.renderNotebooks.bind(this);
   }
 
+  onNotebooksChange(){
+    let notebooks = NotebookStore.getState();
+    this.setState({noteBookStore:notebooks});
+  }
+
   componentDidMount(){
     WindowStore.listen(this.onWindowChange);
     window.addEventListener("resize", this.updateWindowDimensions);
@@ -59,18 +64,21 @@ class EditUserSettingsView extends React.Component {
           </tr>
         );
       });
+      return notebookChildren;
     }
   }
 
   renderTableData(){
-    let notebooks = this.state.noteBookStore.notebooks;
+    let notebooks = this.state.noteBookStore.notebooks;    
+    let userSchoolId = this.state.user.fbData.school_id;
+    let panelHeader = `Notebooks for ${userSchoolId}`;
 
     if(notebooks === undefined){
       return null;
     } else {
       return (
         <div>
-          <Panel header="Notebooks">
+          <Panel header={panelHeader}>
             <Table striped bordered condensed hover responsive>
             <thead>
               <tr>
@@ -93,9 +101,11 @@ class EditUserSettingsView extends React.Component {
   }
 
   render() {
-    let userSchoolId = this.state.user.fbData.school_id;
     return (
       <div className='container landingContainer span5 fill'>
+        <h2>Hello, {this.state.user.fbData.name}! </h2>
+        <h4>Manage your profile here...</h4>
+        <br/>
         <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>
           {this.renderTableData()}
       </div>
