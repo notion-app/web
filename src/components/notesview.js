@@ -5,8 +5,7 @@ import WindowStore from 'stores/WindowStore';
 import WindowActions from 'actions/WindowActions';
 import NotebookActions from 'actions/NotebookActions';
 import NotionNavBar from 'components/ui/notionNavBar';
-import AddNoteModal from 'components/ui/AddNoteModal';
-import { Modal, Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
+import { Input, Modal, Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
 import _ from 'lodash';
 import Dock from 'react-dock';
 
@@ -26,11 +25,15 @@ class NotesView extends React.Component {
         height:window.innerHeight
       },
       addNoteModalVisable: false,
+      noteName:'',
     }
     this.onChange = this.onChange.bind(this);
     this.onWindowChange = this.onWindowChange.bind(this);
     this.onNoteClick = this.onNoteClick.bind(this);
     this.onNewNoteClick = this.onNewNoteClick.bind(this);
+    this.validateName = this.validateName.bind(this);
+    this.onNameChange = this.onNameChange.bind(this);
+    this.onModalclose = this.onModalclose.bind(this);
   }
 
   componentWillMount() {
@@ -53,6 +56,10 @@ class NotesView extends React.Component {
       return true
     }
     */
+
+    else if(this.state.noteName.length != nextState.noteName.length){
+      return true;
+    }
 
     else if(this.state.windowStore.width != nextState.windowStore.width){
       return true;
@@ -77,6 +84,20 @@ class NotesView extends React.Component {
   onNewNoteClick(){
     console.log('click')
     this.setState({addNoteModalVisable: true});
+  }
+
+  onNameChange(){
+    this.setState({noteName:this.refs.input.getValue()});
+  }
+
+  validateName(){
+    let length = this.state.noteName.length;
+    if(length >0) return 'success';
+    else return 'error';
+  }
+
+  onModalclose() {
+    this.setState({ addNoteModalVisable: false });
   }
 
 
@@ -118,11 +139,21 @@ class NotesView extends React.Component {
               <Panel header={ <h3> Add New Notebook </h3> } bsStyle="default" className='addNewNotebookPanel' onClick={this.onNewNoteClick}>
                 <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn0.iconfinder.com/data/icons/math-business-icon-set/93/1_1-512.png"/>
                   <div>
-                    <Modal show={this.state.addNoteModalVisable} onHide={this.close}>
+                    <Modal show={this.state.addNoteModalVisable} onHide={this.onModalclose}>
                       <Modal.Header closeButton>
                         <Modal.Title>Add New Note</Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
+                        <Input
+                          type="text"
+                          value={this.state.noteName}
+                          label="Note name"
+                          bsStyle={this.validateName()}
+                          hasFeedback
+                          ref="input"
+                          groupClassName="group-class"
+                          labelClassName="label-class"
+                          onChange={this.onNameChange} />
                       </Modal.Body>
                       <Modal.Footer>
                         <Button onClick={this.close}>Add Note</Button>
