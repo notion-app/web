@@ -5,6 +5,7 @@ import WindowStore from 'stores/WindowStore';
 import WindowActions from 'actions/WindowActions';
 import NotebookActions from 'actions/NotebookActions';
 import NotionNavBar from 'components/ui/notionNavBar';
+import LoginManager from 'util/LoginManager';
 import { Input, Modal, Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
 import _ from 'lodash';
 import Dock from 'react-dock';
@@ -16,9 +17,11 @@ class NotesView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user:LoginManager.getAuthInfo(),
       notebookId: props.params.notebookId,
-      noteStore: {
-        notes:[]
+      noteBookStore: {
+        joinedNotes:[],
+        unJoinedNotes:[]
       },
       windowStore:{
         width:window.innerWidth,
@@ -34,6 +37,7 @@ class NotesView extends React.Component {
     this.validateName = this.validateName.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
     this.onModalclose = this.onModalclose.bind(this);
+    this.onCreateNote = this.onCreateNote.bind(this);
   }
 
   componentWillMount() {
@@ -43,19 +47,22 @@ class NotesView extends React.Component {
   componentDidMount(){
     NotebookStore.listen(this.onChange);
     WindowStore.listen(this.onWindowChange);
-    //NotebookActions.fetchNotebooks();
+    NotebookActions.getUnjoinedNotes(this.state.notebookId, this.state.user.fbData.fb_auth_token);
+    NotebookActions.getJoinedNotes(this.state.notebookId, this.state.user.fbData.fb_auth_token);
+
     window.addEventListener("resize", this.updateWindowDimensions);
   }
 
-  shouldComponentUpdate(nextProps,nextState){;
+  shouldComponentUpdate(nextProps,nextState){
+    /*
     if(this.state.addNoteModalVisable != nextState.addNoteModalVisable){
       return true;
     }
-    /*
+
     else if(this.state.noteBookStore.notebooks.length != nextState.noteBookStore.notebooks.length ){
       return true
     }
-    */
+
 
     else if(this.state.noteName.length != nextState.noteName.length){
       return true;
@@ -67,6 +74,8 @@ class NotesView extends React.Component {
     }
 
     return false;
+    */
+    return true;
   }
 
   onWindowChange(){
@@ -100,6 +109,11 @@ class NotesView extends React.Component {
     this.setState({ addNoteModalVisable: false });
   }
 
+  onCreateNote(){
+    NotebookActions.createNote(this.state.notebookId, this.state.user.fbData.fb_auth_token, this.state.noteName);
+    this.setState({addNoteModalVisable:false, noteName:''});
+  }
+
 
   static getStores(props) {
     return [NotebookStore, WindowStore];
@@ -120,12 +134,10 @@ class NotesView extends React.Component {
   }
 
   renderNotes() {
-    console.log(this.state);
     let emptyNoteHolder = {
       title: '__add_new_note__',
     };
-    let notes = this.state.noteStore.notes;
-    console.log(notes);
+    let notes = this.state.noteBookStore.unJoinedNotes;
     notes = notes.concat(emptyNoteHolder);
     let chunks = this.state.windowStore.width <= 991? _.chunk(notes,2): _.chunk(notes,3);
     let childKey = 0;
@@ -156,7 +168,7 @@ class NotesView extends React.Component {
                           onChange={this.onNameChange} />
                       </Modal.Body>
                       <Modal.Footer>
-                        <Button onClick={this.close}>Add Note</Button>
+                        <Button onClick={this.onCreateNote}>Add Note</Button>
                       </Modal.Footer>
                     </Modal>
                   </div>
@@ -164,9 +176,12 @@ class NotesView extends React.Component {
             </Col>
           )
         } else {
+          let n = _.find(note.notes, (note) => {
+            return note.title !== "";
+          });
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel className='note-panel' header={ <h3> {note.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary" onClick={this.onNoteClick.bind(this,childKey)}>
+              <Panel className='note-panel' header={ <h3> {n.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary" onClick={this.onNoteClick.bind(this,childKey)}>
                 <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
                 {note.preview}
               </Panel>
@@ -185,6 +200,7 @@ class NotesView extends React.Component {
   }
 
   render() {
+    console.log(this.state);
     let notebookViews = this.renderNotes();
     //let notebook = this.state.noteBookStore.notebooks[this.state.notebookId];
     return (

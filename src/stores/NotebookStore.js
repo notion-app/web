@@ -8,6 +8,8 @@ import _ from 'lodash';
 @createStore(flux)
 class NotebookStore {
   notebooks = []
+  joinedNotes = []
+  unJoinedNotes = []
 
   @bind(actions.fetchNotebooks)
   onFetchNotebooks(loadedNotebooks){
@@ -38,6 +40,21 @@ class NotebookStore {
   onUpdateNotebook(notebook){
     let index = _.findIndex(this.notebooks, {notebook_id: notebook.notebook_id});
     this.notebooks[index] = notebook;
+  }
+
+  @bind(actions.getJoinedNotes)
+  onGetJoinedNotes(notes){
+    this.joinedNotes = this.joinedNotes.concat(notes);
+  }
+
+  @bind(actions.getUnjoinedNotes)
+  onGetUnjoinedNotes(notes){
+    this.unJoinedNotes = this.unJoinedNotes.concat(notes);
+  }
+
+  @bind(actions.createNote)
+  onCreateNote(note){
+    this.joinedNotes = this.joinedNotes.concat(note);
   }
 }
 

@@ -88,6 +88,54 @@ class NotebookActions {
     });
   }
 
+  getJoinedNotes(notebook_id, token){
+    let path = `${API_ROOT}/notebook/${notebook_id}/topic?user=true&token=${token}`;
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'GET',
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done ((notes) => {
+      this.dispatch(notes);
+    });
+  }
+
+  getUnjoinedNotes(notebook_id, token){
+    let path = `${API_ROOT}/notebook/${notebook_id}/topic?unjoined=true&token=${token}`;
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'GET',
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done ((notes) => {
+      this.dispatch(notes);
+    });
+  }
+
+  createNote(notebook_id = "" , token, noteTitle, topic_id=""){
+    let path = `${API_ROOT}/note?token=${token}`;
+    let body = {
+      title:noteTitle,
+      topic_id:topic_id,
+      notebook_id: notebook_id
+    };
+
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'POST',
+      data:JSON.stringify(body),
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done((note)=> {
+      this.dispatch(note);
+    });
+  }
 }
 
 export default NotebookActions;
