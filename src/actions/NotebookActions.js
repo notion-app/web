@@ -50,7 +50,7 @@ class NotebookActions {
   }
 
   unsubscribeToNotebook(user_id, token, notebook_id){
-    let path = `${API_ROOT}/user/${user_id}/subscription?token=${token}`;
+    let path = `${API_ROOT}/user/${user_id}/subscription/${notebook_id}?token=${token}`;
     let body = {
       notebook_id:notebook_id
     }
