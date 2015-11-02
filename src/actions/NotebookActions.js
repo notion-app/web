@@ -88,6 +88,20 @@ class NotebookActions {
     });
   }
 
+  getSingleNote(notebook_id, note_id, token){
+    let path = `${API_ROOT}/notebook/${notebook_id}/note/${note_id}?token=${token}`;
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'GET',
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done ((note) => {
+      this.dispatch(note);
+    });
+  }
+
   getJoinedNotes(notebook_id, token){
     let path = `${API_ROOT}/notebook/${notebook_id}/topic?user=true&token=${token}`;
     $.ajax({
@@ -116,12 +130,11 @@ class NotebookActions {
     });
   }
 
-  createNote(notebook_id = "" , token, noteTitle, topic_id=""){
-    let path = `${API_ROOT}/note?token=${token}`;
+  createNoteBasedOffTopic(notebook_id = "" , token, noteTitle, topic_id=""){
+    let path = `${API_ROOT}/notebook/${notebook_id}/note?token=${token}`;
     let body = {
       title:noteTitle,
       topic_id:topic_id,
-      notebook_id: notebook_id
     };
 
     $.ajax({
@@ -129,6 +142,41 @@ class NotebookActions {
       crossDomain:true,
       method:'POST',
       data:JSON.stringify(body),
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done((note)=> {
+      console.log(note);
+      this.dispatch(note);
+    });
+  }
+
+  createNote(notebook_id = "" , token, noteTitle, topic_id=""){
+    let path = `${API_ROOT}/notebook/${notebook_id}/note?token=${token}`;
+    let body = {
+      title:noteTitle,
+      topic_id:topic_id,
+    };
+
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'POST',
+      data:JSON.stringify(body),
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done((note)=> {
+      this.dispatch(note);
+    });
+  }
+
+  deleteNote(notebook_id, note_id, token){
+    let path = `${API_ROOT}/notebook/${notebook_id}/note/${note_id}?token=${token}`;
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'DELETE',
       error: function(xhr,options,error){
         console.log(error);
       }

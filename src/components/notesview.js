@@ -29,15 +29,19 @@ class NotesView extends React.Component {
       },
       addNoteModalVisable: false,
       noteName:'',
+      selectedTopicId: ''
     }
     this.onChange = this.onChange.bind(this);
     this.onWindowChange = this.onWindowChange.bind(this);
-    this.onNoteClick = this.onNoteClick.bind(this);
+    this.onJoinedNoteClick = this.onJoinedNoteClick.bind(this);
+    this.onUnjoinedNoteClick = this.onUnjoinedNoteClick.bind(this);
     this.onNewNoteClick = this.onNewNoteClick.bind(this);
     this.validateName = this.validateName.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
     this.onModalclose = this.onModalclose.bind(this);
     this.onCreateNote = this.onCreateNote.bind(this);
+    this.renderJoinedNotes = this.renderJoinedNotes.bind(this);
+    this.onJoinedNoteDeleteClick = this.onJoinedNoteDeleteClick.bind(this);
   }
 
   componentWillMount() {
@@ -91,7 +95,6 @@ class NotesView extends React.Component {
   }
 
   onNewNoteClick(){
-    console.log('click')
     this.setState({addNoteModalVisable: true});
   }
 
@@ -110,8 +113,14 @@ class NotesView extends React.Component {
   }
 
   onCreateNote(){
-    NotebookActions.createNote(this.state.notebookId, this.state.user.fbData.fb_auth_token, this.state.noteName);
-    this.setState({addNoteModalVisable:false, noteName:''});
+    if(this.state.selectedTopicId === ""){
+      NotebookActions.createNote(this.state.notebookId, this.state.user.fbData.fb_auth_token, this.state.noteName);
+      this.setState({addNoteModalVisable:false, noteName:''});
+    } else {
+      NotebookActions.createNoteBasedOffTopic(this.state.notebookId, this.state.user.fbData.fb_auth_token, this.state.noteName, this.state.selectedTopicId);
+      this.setState({addNoteModalVisable:false, noteName:'', selectedTopicId:''});
+    }
+
   }
 
 
@@ -127,10 +136,56 @@ class NotesView extends React.Component {
   this.setState({ detailDockVisable:isVisible });
 }
 
-  onNoteClick(index){
-    console.log(index)
-    let location = `${window.location.pathname}/note/${index-1}/edit`;
+onJoinedNoteDeleteClick(index){
+  let note = this.state.noteBookStore.joinedNotes[index-1];
+  let notebook_id = this.state.notebookId;
+  let note_id = note.notes[0].id;
+  let token = this.state.user.fbData.fb_auth_token;
+  NotebookActions.deleteNote(notebook_id, note_id, token);
+}
+
+  onJoinedNoteClick(index){
+    let note = this.state.noteBookStore.joinedNotes[index-1];
+    let location = `${window.location.pathname}/note/${note.notes[0].id}/edit`;
     window.location.replace(location);
+  }
+
+  onUnjoinedNoteClick(index){
+    let note = this.state.noteBookStore.unJoinedNotes[index-1];
+    console.log(note);
+    this.setState({selectedTopicId: note.id, addNoteModalVisable:true });
+    //let location = `${window.location.pathname}/note/${index-1}/edit`;
+    //window.location.replace(location);
+  }
+
+  renderJoinedNotes() {
+    let notes = this.state.noteBookStore.joinedNotes;
+    let chunks = this.state.windowStore.width <= 991? _.chunk(notes,2): _.chunk(notes,3);
+    let childKey = 0;
+    let rowKey = 0;
+    let notebookViews = _.map(chunks, (notes,index) =>{
+      let notebookChildren = _.map(notes, (note,notebookIndex)=>{
+        childKey = childKey+1;
+          let n = _.find(note.notes, (note) => {
+            return note.title !== "";
+          });
+          return (
+            <Col xs={12} md={4} key={childKey} className='notebookcol'>
+              <Panel className='joined-note-panel' header={ <h3> {n.title}<Glyphicon onClick={this.onJoinedNoteDeleteClick.bind(this,childKey)} className="pull-right removeNotebookIcon" glyph="remove" /> </h3> } bsStyle="primary">
+                <Thumbnail onClick={this.onJoinedNoteClick.bind(this,childKey)} className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
+                {note.preview}
+              </Panel>
+            </Col>
+          );
+      });
+      rowKey = rowKey+1;
+      return (
+        <Row className='show-grid' key={rowKey}>
+          {notebookChildren}
+        </Row>
+      )
+    });
+    return notebookViews;
   }
 
   renderNotes() {
@@ -181,7 +236,7 @@ class NotesView extends React.Component {
           });
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel className='note-panel' header={ <h3> {n.title}  <Glyphicon glyph="star" /></h3> } bsStyle="primary" onClick={this.onNoteClick.bind(this,childKey)}>
+              <Panel className='note-panel' header={ <h3> {n.title} </h3> } bsStyle="primary" onClick={this.onUnjoinedNoteClick.bind(this,childKey)}>
                 <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
                 {note.preview}
               </Panel>
@@ -200,7 +255,7 @@ class NotesView extends React.Component {
   }
 
   render() {
-    console.log(this.state);
+    //console.log(this.state);
     let notebookViews = this.renderNotes();
     //let notebook = this.state.noteBookStore.notebooks[this.state.notebookId];
     return (
@@ -208,6 +263,7 @@ class NotesView extends React.Component {
         <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>
         <div><h1><Label className='notebook-label'>{this.state.notebookId}</Label></h1></div>
         <Grid>
+          {this.renderJoinedNotes()}
           {notebookViews}
         </Grid>
       </div>

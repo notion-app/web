@@ -14,7 +14,8 @@ const MdEditor = React.createClass({
       panelClass: 'md-panel',
       mode: 'split',
       isFullScreen: false,
-      result: marked(this.props.content || '')
+      result: marked(this.props.content || ''),
+      content: this.props.content || ''
     }
   },
   componentDidMount () {
@@ -38,7 +39,7 @@ const MdEditor = React.createClass({
           {this._getToolBar()}
         </div>
         <div className={editorClass}>
-          <textarea ref="editor" name="content" onChange={this._onChange}></textarea>{/* style={{height: this.state.editorHeight + 'px'}} */}
+          <textarea  ref="editor" name="content" onChange={this._onChange}></textarea>{/* style={{height: this.state.editorHeight + 'px'}} */}
         </div>
         <div className={previewClass} ref="preview" dangerouslySetInnerHTML={{ __html: this.state.result }}></div>
         <div className="md-spliter"></div>
@@ -109,7 +110,7 @@ const MdEditor = React.createClass({
     if (this._ltr) clearTimeout(this._ltr)
 
     this._ltr = setTimeout(() => {
-      this.setState({ result: marked(this.textControl.value) }) // change state
+      this.setState({ content: this.textControl.value, result: marked(this.textControl.value) }) // change state
     }, 300)
   },
   _changeMode (mode) {
