@@ -143,8 +143,8 @@ class NotebookView extends React.Component {
   }
 
   onOpenNotebook(){
-    let location = `/notebooks/${this.state.currentSelectedNotebook}`;
-    window.location.replace(location);
+    let notebook = this.state.noteBookStore.notebooks[this.state.currentSelectedNotebook];
+    location = `/notebooks/${notebook.notebook_id}`;
   }
 
   renderDetailDock(){

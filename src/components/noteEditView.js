@@ -5,6 +5,7 @@ import WindowStore from 'stores/WindowStore';
 import WindowActions from 'actions/WindowActions';
 import NotebookActions from 'actions/NotebookActions';
 import NotionNavBar from 'components/ui/notionNavBar';
+import LoginManager from 'util/LoginManager';
 import { Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
 import _ from 'lodash';
 import Editor from 'components/ui/editor';
@@ -16,6 +17,7 @@ class NoteEditView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: LoginManager.getAuthInfo(),
       notebookId: props.params.notebookId,
       noteId: props.params.noteId,
       noteBookStore: {
@@ -32,7 +34,7 @@ class NoteEditView extends React.Component {
 
   componentDidMount(){
     NotebookStore.listen(this.onNotebookChange);
-    NotebookActions.fetchNotebooks();
+  NotebookActions.getSingleNote(this.state.notebookId, this.state.noteId, this.state.user.fbData.fb_auth_token);
   }
 
   onNotebookChange(){
@@ -48,19 +50,18 @@ class NoteEditView extends React.Component {
   }
 
   renderNoteLabel(){
-    if(this.state.noteBookStore.notebooks.length == 0){
-      return(null);
-    } else {
-      let notebook = this.state.noteBookStore.notebooks[this.state.notebookId];
-      let note = notebook.notes[this.state.noteId];
-      let title = `${notebook.title}-${note.title}`
+    if(this.state.noteBookStore.singleNote !== undefined){
+      let title = `${this.state.noteBookStore.singleNote.title}`
       return (
         <Label className='noteLabel'>{title}</Label>
-      )
+      );
+    } else {
+      return(null);
     }
   }
 
   render(){
+    console.log(this.state);
     return (
       <div className='container landingContainer span5 fill'>
         <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>

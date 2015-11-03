@@ -8,6 +8,9 @@ import _ from 'lodash';
 @createStore(flux)
 class NotebookStore {
   notebooks = []
+  joinedNotes = []
+  unJoinedNotes = []
+  singleNote = null;
 
   @bind(actions.fetchNotebooks)
   onFetchNotebooks(loadedNotebooks){
@@ -38,6 +41,43 @@ class NotebookStore {
   onUpdateNotebook(notebook){
     let index = _.findIndex(this.notebooks, {notebook_id: notebook.notebook_id});
     this.notebooks[index] = notebook;
+  }
+
+  @bind(actions.getSingleNote)
+  onGetSingleNote(note){
+    this.singleNote = note;
+  }
+
+  @bind(actions.getJoinedNotes)
+  onGetJoinedNotes(notes){
+    this.joinedNotes = this.joinedNotes.concat(notes);
+  }
+
+  @bind(actions.getUnjoinedNotes)
+  onGetUnjoinedNotes(notes){
+    this.unJoinedNotes = this.unJoinedNotes.concat(notes);
+  }
+
+  @bind(actions.createNoteBasedOffTopic)
+  onCreateNoteBasedOffTopic(note){
+    _.remove(this.unJoinedNotes, (unJoinedNote) => {
+      return note.id === unJoinedNote.id;
+    });
+    this.joinedNotes = this.joinedNotes.concat(note);
+  }
+
+  @bind(actions.createNote)
+  onCreateNote(note){
+    this.joinedNotes = this.joinedNotes.concat(note);
+  }
+
+  @bind(actions.deleteNote)
+  onDeleteNote(note){
+    let id = note.notes[0].id;
+    _.remove(this.joinedNotes, (joinNote) => {
+      return joinNote.notes[0].id === id;
+    });
+    this.unJoinedNotes = this.unJoinedNotes.concat(note);
   }
 }
 
