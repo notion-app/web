@@ -3,6 +3,7 @@ import {Input, Table, Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Gr
 import _ from 'lodash';
 import NotionNavBar from 'components/ui/notionNavBar';
 import LoginManager from 'util/LoginManager';
+import LoginActions from 'actions/loginActions';
 import ChooseSchoolModal from 'components/ui/ChooseSchoolModal';
 
 /* Stores */
@@ -13,7 +14,7 @@ import NotebookActions from 'actions/NotebookActions';
 import SchoolStore from 'stores/SchoolStore';
 import SchoolActions from 'actions/SchoolActions';
 
-
+var Typeahead = require('react-typeahead').Typeahead;
 require('../css/editUserSettings.css');
 
 class EditUserSettingsView extends React.Component {
@@ -32,14 +33,22 @@ class EditUserSettingsView extends React.Component {
         height:window.innerHeight
       },      
       detailDockVisable:false,
-      chooseSchoolModalVisible:false
+      chooseSchoolTypeaheadVisible:false,
+      schoolHasBeenSelected:false,
+      selectedOption: null
     }
+
     this.onNotebooksChange = this.onNotebooksChange.bind(this);
     this.onSchoolChange = this.onSchoolChange.bind(this);
     this.renderTableData = this.renderTableData.bind(this);
     this.renderNotebooks = this.renderNotebooks.bind(this);
     this.openSchoolModal = this.openSchoolModal.bind(this);
-    this.getSchool = this.getSchool.bind(this);
+    this.getSchoolByID = this.getSchoolByID.bind(this);
+    this.onSchoolSelected = this.onSchoolSelected.bind(this);
+    this.getAllSchoolNames = this.getAllSchoolNames.bind(this);
+    this.getChangeSchoolButtonText = this.getChangeSchoolButtonText.bind(this);
+    this.getChangeSchoolButtonStyle = this.getChangeSchoolButtonStyle.bind(this);
+    this.getChangeSchoolTypeaheadClass = this.getChangeSchoolTypeaheadClass.bind(this);
   }
 
   onNotebooksChange(){
@@ -66,26 +75,97 @@ class EditUserSettingsView extends React.Component {
     this.setState({windowStore:WindowStore.getState()});
   }
 
+  openSchoolModal(){
+    if (this.state.chooseSchoolTypeaheadVisible){
+      // User wants to save new school:
+      if (this.state.schoolHasBeenSelected){
+        /*
+
+        *** Enable if we actually want to let users change their school later on ***
+
+        let chosenSchool = _.find(this.state.schoolStore.schools, (school) => {
+          return school.name == this.state.selectedOption;
+        });
+        let authInfo = LoginManager.getAuthInfo();
+        SchoolActions.setUserSchool(authInfo.fbData.id, authInfo.fbData.fb_auth_token, chosenSchool.id).then(()=>{
+          console.log('DONE CHOOSING SCHOOL');
+        });
+        authInfo.fbData.school_id = chosenSchool.id;
+        LoginActions.setAuthInfo(authInfo);*/
+        this.setState({chooseSchoolTypeaheadVisible:false, schoolHasBeenSelected:false})
+      }
+      // User clicked 'cancel':
+      else {        
+        this.setState({chooseSchoolTypeaheadVisible:false});
+      }
+    }
+    // User wants to search for school:
+    else {
+      this.setState({chooseSchoolTypeaheadVisible:true});
+    }
+  }
+
   updateWindowDimensions(e){
     WindowActions.setDimensions({width:window.innerWidth, height:window.innerHeight});
   }
 
-  getSchool(id){
-    console.log(id);
+  onSchoolSelected(option){
+    this.setState({schoolHasBeenSelected:true, selectedOption:option});
+  }
+
+  getChangeSchoolButtonStyle(){
+    if (this.state.chooseSchoolTypeaheadVisible){
+      return this.state.schoolHasBeenSelected ? "success" : "danger";
+    }
+    else {
+      return "primary";
+    }
+  }
+
+  getChangeSchoolButtonText(){
+    if (this.state.chooseSchoolTypeaheadVisible){
+      return this.state.schoolHasBeenSelected ? "Submit Change" : "Cancel";
+    }
+    else {
+      return "Change School";
+    }
+  }
+
+  getChangeSchoolTypeaheadClass(){
+    if (this.state.chooseSchoolTypeaheadVisible){
+      return"visibleSchoolSelector";
+    }
+    else {
+      return "hiddenSchoolSelector";
+    }
+  }
+
+  getAllSchoolNames() {
+    if(this.state.schoolStore.schools.length == 0){
+      return(null);
+    }
+
     let schools = this.state.schoolStore.schools;
-    let schoolName = "(School Not Found)";
+
+    var allSchools = [];
+    let schoolViews = _.map(schools, (school) => {
+      allSchools.push(school.name);
+    });
+
+    return allSchools;
+  }
+
+  getSchoolByID(id){
+    let schools = this.state.schoolStore.schools;
+    let schoolToReturn = null;
 
     let schoolViews = _.map(schools, (school) => {
       if (school.id == id){
-        schoolName = school.name;
+        schoolToReturn = school;
       }
     });
-    return schoolName;
-  }
 
-  openSchoolModal(){
-    console.log("Opening Modal");
-    this.state.chooseSchoolModalVisible = true;
+    return schoolToReturn;
   }
 
   renderNotebooks() {
@@ -111,8 +191,15 @@ class EditUserSettingsView extends React.Component {
 
   renderTableData(){
     let notebooks = this.state.noteBookStore.notebooks;    
-    let userSchoolId = this.getSchool(this.state.user.fbData.school_id);
-    let panelHeader = `My Notebooks for ${userSchoolId}`;
+    let userSchool = this.getSchoolByID(this.state.user.fbData.school_id);
+    let userSchoolName = "(School Not Found)";
+    let userSchoolLocation = "";
+    if (userSchool != null){
+      userSchoolName = userSchool.name;
+      userSchoolLocation = userSchool.location;
+    }
+
+    let panelHeader = `My Notebooks for ${userSchoolName}`;
 
     if(notebooks === undefined){
       return null;
@@ -120,9 +207,10 @@ class EditUserSettingsView extends React.Component {
       return (
         <div>
           <Panel header="My School" bsStyle="primary">
-            <h3>Purdue University</h3>
-            <h5>West Lafayette, IN</h5>
-            <Button bsStyle="primary" className="changeSchoolButton" onClick={this.openSchoolModal}>Change School</Button>
+            <h3>{userSchoolName}</h3>
+            <h5>{userSchoolLocation}</h5>
+            <Button bsStyle={this.getChangeSchoolButtonStyle()} className="changeSchoolButton" onClick={this.openSchoolModal}>{this.getChangeSchoolButtonText()}</Button>
+            <Typeahead className={this.getChangeSchoolTypeaheadClass()} options={this.getAllSchoolNames()} maxVisible={5} onOptionSelected={this.onSchoolSelected}/>
           </Panel>
 
           <Panel header={panelHeader}>
@@ -147,11 +235,9 @@ class EditUserSettingsView extends React.Component {
     }
   }
 
-  render() {    
-    let shouldShowModal = this.state.chooseSchoolModalVisible;
+  render() {
     return (
       <div className='container landingContainer span5 fill'>
-        {!shouldShowModal? null: <ChooseSchoolModal/>}
         <h2>Hello, {this.state.user.fbData.name}! </h2>
         <h4>Manage your profile here...</h4>
         <br/>

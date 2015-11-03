@@ -1,3 +1,35 @@
 .changeSchoolButton {
 	margin-top: 1em !important;
 }
+
+.hiddenSchoolSelector {
+  visibility: hidden;
+}
+
+.visibleSchoolSelector {
+  margin-top: 1em !important;
+  visibility: visible;
+}
+
+
+.typeahead-selector {
+  margin: auto;
+  margin-top: 1em;
+  padding: 4px 0px 4px 0px;
+  position: relative;
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+  border-radius: 5px;
+  background-color: white;
+  width: 30%;
+  text-align: left;
+}
+
+.typeahead-option {
+  padding: 0px 4px 0px 12px;
+}
+
+.typeahead-token-close {
+  text-decoration: none;
+  margin-left: 8px;
+}
