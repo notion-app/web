@@ -61,14 +61,18 @@ class NoteEditView extends React.Component {
   }
 
   render(){
-    console.log(this.state);
-    return (
-      <div className='container landingContainer span5 fill'>
-        <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>
-        {this.renderNoteLabel()}
-        <Editor/>
-      </div>
-    )
+    if(this.state.noteBookStore.singleNote === undefined){
+      return(null);
+    } else {
+      let content = this.state.noteBookStore.singleNote.content;
+      return (
+        <div className='container landingContainer span5 fill'>
+          <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>
+          {this.renderNoteLabel()}
+          <Editor content={content} note={this.state.noteBookStore.singleNote} notebookId={this.state.notebookId}/>
+        </div>
+      )
+    }
   }
 }
 export default NoteEditView;
