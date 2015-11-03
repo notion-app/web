@@ -184,6 +184,24 @@ class NotebookActions {
       this.dispatch(note);
     });
   }
+
+  updateNote(notebook_id, note_id, token, content){
+    let path = `${API_ROOT}/notebook/${notebook_id}/note/${note_id}?token=${token}`;
+    let body = {
+      content:content
+    }
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'PUT',
+      data:JSON.stringify(body),
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done((note)=> {
+      this.dispatch(note);
+    });
+  }
 }
 
 export default NotebookActions;

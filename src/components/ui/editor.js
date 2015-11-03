@@ -1,6 +1,8 @@
 import React, { PropTypes as T } from 'react'
 import marked from 'marked'
 import cNames from 'classnames'
+import NotebookActions from 'actions/NotebookActions';
+import LoginManager from 'util/LoginManager';
 
 require('../..//less/editor.less');
 
@@ -11,15 +13,19 @@ const MdEditor = React.createClass({
   },
   getInitialState () {
     return {
+      user: LoginManager.getAuthInfo(),
       panelClass: 'md-panel',
       mode: 'split',
       isFullScreen: false,
       result: marked(this.props.content || ''),
-      content: this.props.content || ''
+      content: this.props.content || '',
+      note: this.props.note,
+      notebookId: this.props.notebookId
     }
   },
   componentDidMount () {
     // cache dom node
+    console.log(this.state);
     this.textControl = React.findDOMNode(this.refs.editor)
     this.previewControl = React.findDOMNode(this.refs.preview)
   },
@@ -39,7 +45,7 @@ const MdEditor = React.createClass({
           {this._getToolBar()}
         </div>
         <div className={editorClass}>
-          <textarea  ref="editor" name="content" onChange={this._onChange}></textarea>{/* style={{height: this.state.editorHeight + 'px'}} */}
+          <textarea  defaultValue={this.state.content} ref="editor" name="content" onChange={this._onChange}></textarea>{/* style={{height: this.state.editorHeight + 'px'}} */}
         </div>
         <div className={previewClass} ref="preview" dangerouslySetInnerHTML={{ __html: this.state.result }}></div>
         <div className="md-spliter"></div>
@@ -101,6 +107,7 @@ const MdEditor = React.createClass({
         </li> { /* edit mode */ }
         <li className="tb-btn spliter pull-right"></li>
         <li className="tb-btn pull-right"><a title="Fullscreen" onClick={this._toggleFullScreen}><i className="glyphicon glyphicon-fullscreen"></i></a></li> {/* full-screen */}
+            <li className="tb-btn pull-right"><a title="Save" onClick={this._save}><i className="glyphicon glyphicon-floppy-disk"></i></a></li> {/* full-screen */}
       </ul>
     )
   },
@@ -108,7 +115,6 @@ const MdEditor = React.createClass({
   _onChange (e) {
     this._isDirty = true // set dirty
     if (this._ltr) clearTimeout(this._ltr)
-
     this._ltr = setTimeout(() => {
       this.setState({ content: this.textControl.value, result: marked(this.textControl.value) }) // change state
     }, 300)
@@ -120,6 +126,11 @@ const MdEditor = React.createClass({
   },
   _toggleFullScreen (e) {
     this.setState({ isFullScreen: !this.state.isFullScreen })
+  },
+
+  _save(e){
+    console.log(this.textControl.value);
+    NotebookActions.updateNote(this.state.notebookId, this.state.note.id, this.state.user.fbData.fb_auth_token, this.textControl.value);
   },
   // default text processors
   _preInputText (text, preStart, preEnd) {
