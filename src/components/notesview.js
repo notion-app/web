@@ -8,6 +8,7 @@ import NotionNavBar from 'components/ui/notionNavBar';
 import LoginManager from 'util/LoginManager';
 import { Input, Modal, Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
 import _ from 'lodash';
+import moment from 'moment';
 import Dock from 'react-dock';
 import marked from 'marked';
 
@@ -141,10 +142,12 @@ class NotesView extends React.Component {
 
 onUnjoinedNoteViewClick(index){
   console.log(index);
+  let note = this.state.noteBookStore.unJoinedNotes[index-1];
+  location = `/notebooks/${this.state.notebookId}/topic/${note.id}`
+
 }
 
 onJoinedNoteViewClick(index){
-  console.log(index);
   let notebook = this.state.noteBookStore.joinedNotes[index-1];
   location = `/notebooks/${this.state.notebookId}/topic/${notebook.id}`
 }
@@ -186,11 +189,13 @@ onJoinedNoteDeleteClick(index){
           if(content == ""){
             content = '## This note has no content \n\n ### Add stuff to it';
           }
+          let timeAgo = moment(note.notes[0].updated_at).fromNow();
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
               <Panel className='joined-note-panel' header={ <h3> {n.title}<Glyphicon onClick={this.onJoinedNoteDeleteClick.bind(this,childKey)} className="pull-right removeNotebookIcon" glyph="remove" /> <Glyphicon className='pull-right' glyph="eye-open" onClick={this.onJoinedNoteViewClick.bind(this,childKey)}/></h3> } bsStyle="primary">
                   <div dangerouslySetInnerHTML={{ __html: marked(_.trunc(content,50))}}  onClick={this.onJoinedNoteClick.bind(this,childKey)}>
                   </div>
+                  <Label className="center" bsStyle="default">{`Last Edited: ${timeAgo}`}</Label>
               </Panel>
             </Col>
           );
@@ -251,11 +256,17 @@ onJoinedNoteDeleteClick(index){
           let n = _.find(note.notes, (note) => {
             return note.title !== "";
           });
+          let content = n.content;
+          let timeAgo = moment(n.updated_at).fromNow();
+          if(content === ''){
+            content = '## This note is empty \n\n ### Add stuff';
+          }
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel className='note-panel' header={ <h3> {n.title} <Glyphicon className='pull-right' glyph="eye-open" onClick={this.onUnjoinedNoteViewClick.bind(this,childKey)}/> </h3> } bsStyle="primary" onClick={this.onUnjoinedNoteClick.bind(this,childKey)}>
-                <div  dangerouslySetInnerHTML={{ __html: marked(_.trunc(n.content,50))}} >
+              <Panel className='note-panel' header={ <h3> {n.title} <Glyphicon className='pull-right' glyph="eye-open" onClick={this.onUnjoinedNoteViewClick.bind(this,childKey)}/> </h3> } bsStyle="primary">
+                <div  dangerouslySetInnerHTML={{ __html: marked(_.trunc(content,50))}} onClick={this.onUnjoinedNoteClick.bind(this,childKey)} >
                 </div>
+                  <Label className="center" bsStyle="default">{`Last Edited: ${timeAgo}`}</Label>
               </Panel>
             </Col>
           );

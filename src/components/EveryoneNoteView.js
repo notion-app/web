@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Panel, Button, Nav, Navbar, NavItem, Jumbotron, Grid, Row} from 'react-bootstrap';
+import { Label, Col, Panel, Button, Nav, Navbar, NavItem, Jumbotron, Grid, Row} from 'react-bootstrap';
 import NotionNavBar from 'components/ui/notionNavBar';
 import LoginManager from 'util/LoginManager';
 import LoginStore from 'stores/loginStore';
@@ -12,6 +12,7 @@ import NotebookActions from 'actions/NotebookActions';
 import Dock from 'react-dock';
 import marked from 'marked';
 import _ from 'lodash';
+import moment from 'moment';
 
 require('../css/EveryoneNote.css');
 class EveryoneNoteView extends React.Component {
@@ -37,7 +38,6 @@ class EveryoneNoteView extends React.Component {
     }), 'notes');
 
     let note = notes[index];
-    console.log(note);
     location = `/notebooks/${this.state.notebookId}/note/${note.id}/edit/:previewMode`
   }
 
@@ -47,11 +47,13 @@ class EveryoneNoteView extends React.Component {
     }), 'notes');
 
     let noteChildren = _.map(notes, (note, index) => {
+      let timeAgo = moment(note.updated_at).fromNow();
       return (
         <Col xs={12} md={4} className='notecol'  key={index}>
           <Panel className="notes-panel" header={<h3>{note.title}</h3>} bsStyle='primary' onClick={this.onNoteClick.bind(this,index)}>
             <div dangerouslySetInnerHTML={{ __html: marked(_.trunc(note.content,40))}}>
             </div>
+            <Label className="center" bsStyle="default">{`Last Edited: ${timeAgo}`}</Label>
           </Panel>
         </Col>
       );

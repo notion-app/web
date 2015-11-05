@@ -9,6 +9,7 @@ import AddNotebookModal from 'components/ui/addNewNotebookModal';
 import ChooseSchoolModal from 'components/ui/ChooseSchoolModal';
 import { Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label, Modal } from 'react-bootstrap';
 import _ from 'lodash';
+import moment from 'moment';
 import Dock from 'react-dock';
 import LoginManager from 'util/LoginManager';
 import marked from 'marked';
@@ -130,12 +131,15 @@ class NotebookView extends React.Component {
       let chunks = _.chunk(notes,3);
       let first = chunks[0];
       let notebookChildren = _.map(first, (note,index)=>{
-        let content = _.trunc(note.notes[0].content,100);
+      let content = _.trunc(note.notes[0].content,100);
+      let timeAgo = moment(note.notes[0].updated_at).fromNow();
+
         return (
           <Col xs={12} md={4} className='notecol' onClick={this.onNoteClick.bind(this,index)} keys={index}>
             <Panel header={<h3>{note.notes[0].title}</h3>} bsStyle='primary'>
               <div dangerouslySetInnerHTML={{ __html: marked(content)}}>
               </div>
+              <Label className="center" bsStyle="default">{`Last Edited: ${timeAgo}`}</Label>
             </Panel>
           </Col>
         )

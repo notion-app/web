@@ -42,6 +42,7 @@
     "lodash": "^3.10.1",
     "markdown-loader": "^0.1.7",
     "marked": "^0.3.5",
+    "moment": "^2.10.6",
     "react": "^0.13.3",
     "react-bootstrap": "^0.25.1",
     "react-dock": "0.0.3",
@@ -49,15 +50,7 @@
     "react-router": "0.13.3",
     "react-typeahead": "1.1.4",
     "style-loader": "^0.12.4",
-    "url-loader": "^0.5.6",
-    "react-typeahead": "1.1.4"
-  },
-  "devDependencies": {
-    "babel-core": "5.6.18",
-    "babel-loader": "5.3.1",
-    "html-webpack-plugin": "1.6.0",
-    "webpack": "1.10.1",
-    "webpack-dev-server": "1.10.1"
+    "url-loader": "^0.5.6"
   },
   "devDependencies": {}
 }
