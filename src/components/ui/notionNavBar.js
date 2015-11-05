@@ -124,6 +124,10 @@ class NotionNavBar extends React.Component {
     }
   }
 
+  goHome(){
+    location = '/notebooks';
+  }
+
   render() {
     let check = LoginManager.getAuthInfo();
     let notLoggedIn = (_.isNull(this.props.userAuth) && (_.isNull(check))) || (!_.isNull(check) && !check.loggedIn);

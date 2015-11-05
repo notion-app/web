@@ -9,6 +9,7 @@ import LoginManager from 'util/LoginManager';
 import { Input, Modal, Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col, Panel, Glyphicon, Thumbnail, Label } from 'react-bootstrap';
 import _ from 'lodash';
 import Dock from 'react-dock';
+import marked from 'marked';
 
 require('../css/landingpage.css');
 require('../css/notesview.css');
@@ -42,6 +43,8 @@ class NotesView extends React.Component {
     this.onCreateNote = this.onCreateNote.bind(this);
     this.renderJoinedNotes = this.renderJoinedNotes.bind(this);
     this.onJoinedNoteDeleteClick = this.onJoinedNoteDeleteClick.bind(this);
+    this.onJoinedNoteViewClick = this.onJoinedNoteViewClick.bind(this);
+    this.onUnjoinedNoteViewClick = this.onUnjoinedNoteViewClick.bind(this);
   }
 
   componentWillMount() {
@@ -136,6 +139,16 @@ class NotesView extends React.Component {
   this.setState({ detailDockVisable:isVisible });
 }
 
+onUnjoinedNoteViewClick(index){
+  console.log(index);
+}
+
+onJoinedNoteViewClick(index){
+  console.log(index);
+  let notebook = this.state.noteBookStore.joinedNotes[index-1];
+  location = `/notebooks/${this.state.notebookId}/topic/${notebook.id}`
+}
+
 onJoinedNoteDeleteClick(index){
   let note = this.state.noteBookStore.joinedNotes[index-1];
   let notebook_id = this.state.notebookId;
@@ -146,7 +159,7 @@ onJoinedNoteDeleteClick(index){
 
   onJoinedNoteClick(index){
     let note = this.state.noteBookStore.joinedNotes[index-1];
-    let location = `${window.location.pathname}/note/${note.notes[0].id}/edit`;
+    let location = `${window.location.pathname}/note/${note.notes[0].id}/edit/editMode`;
     window.location.replace(location);
   }
 
@@ -169,11 +182,15 @@ onJoinedNoteDeleteClick(index){
           let n = _.find(note.notes, (note) => {
             return note.title !== "";
           });
+          let content = note.notes[0].content;
+          if(content == ""){
+            content = '## This note has no content \n\n ### Add stuff to it';
+          }
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel className='joined-note-panel' header={ <h3> {n.title}<Glyphicon onClick={this.onJoinedNoteDeleteClick.bind(this,childKey)} className="pull-right removeNotebookIcon" glyph="remove" /> </h3> } bsStyle="primary">
-                <Thumbnail onClick={this.onJoinedNoteClick.bind(this,childKey)} className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
-                {note.preview}
+              <Panel className='joined-note-panel' header={ <h3> {n.title}<Glyphicon onClick={this.onJoinedNoteDeleteClick.bind(this,childKey)} className="pull-right removeNotebookIcon" glyph="remove" /> <Glyphicon className='pull-right' glyph="eye-open" onClick={this.onJoinedNoteViewClick.bind(this,childKey)}/></h3> } bsStyle="primary">
+                  <div dangerouslySetInnerHTML={{ __html: marked(_.trunc(content,50))}}  onClick={this.onJoinedNoteClick.bind(this,childKey)}>
+                  </div>
               </Panel>
             </Col>
           );
@@ -236,9 +253,9 @@ onJoinedNoteDeleteClick(index){
           });
           return (
             <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel className='note-panel' header={ <h3> {n.title} </h3> } bsStyle="primary" onClick={this.onUnjoinedNoteClick.bind(this,childKey)}>
-                <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-education/40/536065-notebook-512.png"/>
-                {note.preview}
+              <Panel className='note-panel' header={ <h3> {n.title} <Glyphicon className='pull-right' glyph="eye-open" onClick={this.onUnjoinedNoteViewClick.bind(this,childKey)}/> </h3> } bsStyle="primary" onClick={this.onUnjoinedNoteClick.bind(this,childKey)}>
+                <div  dangerouslySetInnerHTML={{ __html: marked(_.trunc(n.content,50))}} >
+                </div>
               </Panel>
             </Col>
           );

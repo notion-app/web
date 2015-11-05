@@ -1,7 +1,7 @@
 .notebook-icon {
-	height: 12em !important;
-	width: 12em !important;
-	margin-left: 6em !important;
+	height: 14em !important;
+	width: 14em !important;
+	margin-left: 4em !important;
 }
 
 .notebook-label {
@@ -10,9 +10,21 @@
   left:0.5em;
 }
 
+.joined-note-panel {
+	height: 35%;
+}
+.note-panel {
+		height: 35%;
+}
+
+.addNewNotebookPanel {
+		height: 35%;
+}
+
 .note-panel > .panel-heading {
   background-color: #FFA737;
 }
+
 
 .panel-body {
 	text-align: center !important;

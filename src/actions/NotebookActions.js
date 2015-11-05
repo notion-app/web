@@ -130,6 +130,20 @@ class NotebookActions {
     });
   }
 
+  getAllNotes(notebook_id, token){
+    let path = `${API_ROOT}/notebook/${notebook_id}/topic?token=${token}`;
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'GET',
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done ((notes) => {
+      this.dispatch(notes);
+    });
+  }
+
   createNoteBasedOffTopic(notebook_id = "" , token, noteTitle, topic_id=""){
     let path = `${API_ROOT}/notebook/${notebook_id}/note?token=${token}`;
     let body = {

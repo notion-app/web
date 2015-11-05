@@ -11,6 +11,7 @@ import { Button, ButtonToolbar, Nav, Navbar, NavItem, Jumbotron, Grid, Row, Col,
 import _ from 'lodash';
 import Dock from 'react-dock';
 import LoginManager from 'util/LoginManager';
+import marked from 'marked';
 
 require('../css/landingpage.css');
 require('../css/notebookview.css');
@@ -21,7 +22,8 @@ class NotebookView extends React.Component {
     this.state = {
       user: LoginManager.getAuthInfo(),
       noteBookStore: {
-        notebooks:[]
+        notebooks:[],
+        joinedNotes:[]
       },
       detailDockVisable:false,
       currentSelectedNotebook:null,
@@ -97,11 +99,15 @@ class NotebookView extends React.Component {
     if(this.state.detailDockVisable){
       this.setState({detailDockVisable:false});
     }
+    let notebook = this.state.noteBookStore.notebooks[index-1];
+    NotebookActions.getJoinedNotes(notebook.notebook_id, this.state.user.fbData.fb_auth_token);
     this.setState({currentSelectedNotebook:index-1, detailDockVisable:true});
   }
 
   onNoteClick(index){
-    location = `/notebooks/${this.state.currentSelectedNotebook}/note/${index}/edit`;
+    let notebook = this.state.noteBookStore.notebooks[this.state.currentSelectedNotebook];
+    let note = this.state.noteBookStore.joinedNotes[index].notes[0];
+    location = `/notebooks/${notebook.notebook_id}/note/${note.id}/edit/editMode`;
   }
 
   onManageClick(){
@@ -119,28 +125,23 @@ class NotebookView extends React.Component {
 
 
   renderNotes(notebook){
-    return null;
-    /*
-    if(notebook != null){
-      if(notebook.notes.length == 0){
-        return(null);
-      }
+    let notes = this.state.noteBookStore.joinedNotes;
 
-      let chunks = _.chunk(notebook.notes,3);
+      let chunks = _.chunk(notes,3);
       let first = chunks[0];
       let notebookChildren = _.map(first, (note,index)=>{
+        let content = _.trunc(note.notes[0].content,100);
         return (
-          <Col xs={12} md={4} className='notecol' onClick={this.onNoteClick.bind(this,index)}>
-            <Panel header={<h3>{note.title}</h3>} bsStyle='primary'>
-              {note.preview}
+          <Col xs={12} md={4} className='notecol' onClick={this.onNoteClick.bind(this,index)} keys={index}>
+            <Panel header={<h3>{note.notes[0].title}</h3>} bsStyle='primary'>
+              <div dangerouslySetInnerHTML={{ __html: marked(content)}}>
+              </div>
             </Panel>
           </Col>
         )
       });
       return notebookChildren;
     }
-    */
-  }
 
   onOpenNotebook(){
     let notebook = this.state.noteBookStore.notebooks[this.state.currentSelectedNotebook];

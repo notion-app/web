@@ -10,6 +10,7 @@ class NotebookStore {
   notebooks = []
   joinedNotes = []
   unJoinedNotes = []
+  allNotes = []
   singleNote = null;
 
   @bind(actions.fetchNotebooks)
@@ -56,6 +57,11 @@ class NotebookStore {
   @bind(actions.getUnjoinedNotes)
   onGetUnjoinedNotes(notes){
     this.unJoinedNotes = this.unJoinedNotes.concat(notes);
+  }
+
+  @bind(actions.getAllNotes)
+  onGetAllNotes(notes){
+    this.allNotes = this.allNotes.concat(notes);
   }
 
   @bind(actions.createNoteBasedOffTopic)

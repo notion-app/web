@@ -12,20 +12,23 @@ const MdEditor = React.createClass({
     children: T.node
   },
   getInitialState () {
+    let type = location.pathname.split('/').pop();
+    let mode = '';
+    type === 'editMode'? mode='split': mode='preview'
     return {
       user: LoginManager.getAuthInfo(),
       panelClass: 'md-panel',
-      mode: 'split',
+      mode: mode,
       isFullScreen: false,
       result: marked(this.props.content || ''),
       content: this.props.content || '',
       note: this.props.note,
-      notebookId: this.props.notebookId
+      notebookId: this.props.notebookId,
+      type: type
     }
   },
   componentDidMount () {
     // cache dom node
-    console.log(this.state);
     this.textControl = React.findDOMNode(this.refs.editor)
     this.previewControl = React.findDOMNode(this.refs.preview)
   },
@@ -34,6 +37,7 @@ const MdEditor = React.createClass({
     this.previewControl = null
   },
   render () {
+    console.log(this.state);
     const panelClass = cNames([ 'md-panel', { 'fullscreen': this.state.isFullScreen } ])
     const editorClass = cNames([ 'md-editor', { 'expand': this.state.mode === 'edit' } ])
     const previewClass = cNames([ 'md-preview', 'markdown', { 'expand': this.state.mode === 'preview', 'shrink': this.state.mode === 'edit' } ])
@@ -61,22 +65,24 @@ const MdEditor = React.createClass({
   },
   // widgets constructors
   _getToolBar () {
-    return (
-      <ul className="md-toolbar clearfix">
-        <li className="tb-btn"><a title="Bold" onClick={this._boldText}><i className="glyphicon glyphicon-bold"></i></a></li>{/* bold */}
-        <li className="tb-btn"><a title="Italic" onClick={this._italicText}><i className="glyphicon glyphicon-italic"></i></a></li>{/* italic */}
-        <li className="tb-btn spliter"></li>
-        <li className="tb-btn"><a title="Link" onClick={this._linkText}><i className="glyphicon glyphicon-link"></i></a></li>{/* link */}
-        <li className="tb-btn"><a title="Indent" onClick={this._blockquoteText}><i className="glyphicon glyphicon-indent-right"></i></a></li>{/* blockquote */}
-        <li className="tb-btn"><a title="Code" onClick={this._codeText}><i className="glyphicon glyphicon-eye-close"></i></a></li>{/* code */}
-        <li className="tb-btn"><a title="Image" onClick={this._pictureText}><i className="glyphicon glyphicon-picture"></i></a></li>{/* picture-o */}
-        <li className="tb-btn spliter"></li>
-        <li className="tb-btn"><a title="Ordered List" onClick={this._listOlText}><i className="glyphicon glyphicon-th-list"></i></a></li>{/* list-ol */}
-        <li className="tb-btn"><a title="Unorded List" onClick={this._listUlText}><i className="glyphicon glyphicon-list"></i></a></li>{/* list-ul */}
-        <li className="tb-btn"><a title="Header" onClick={this._headerText}><i className="glyphicon glyphicon-header"></i></a></li>{/* header */}
-        {this._getExternalBtn()}
-      </ul>
-    )
+    if(this.state.type === 'editMode') {
+      return (
+        <ul className="md-toolbar clearfix">
+          <li className="tb-btn"><a title="Bold" onClick={this._boldText}><i className="glyphicon glyphicon-bold"></i></a></li>{/* bold */}
+          <li className="tb-btn"><a title="Italic" onClick={this._italicText}><i className="glyphicon glyphicon-italic"></i></a></li>{/* italic */}
+          <li className="tb-btn spliter"></li>
+          <li className="tb-btn"><a title="Link" onClick={this._linkText}><i className="glyphicon glyphicon-link"></i></a></li>{/* link */}
+          <li className="tb-btn"><a title="Indent" onClick={this._blockquoteText}><i className="glyphicon glyphicon-indent-right"></i></a></li>{/* blockquote */}
+          <li className="tb-btn"><a title="Code" onClick={this._codeText}><i className="glyphicon glyphicon-eye-close"></i></a></li>{/* code */}
+          <li className="tb-btn"><a title="Image" onClick={this._pictureText}><i className="glyphicon glyphicon-picture"></i></a></li>{/* picture-o */}
+          <li className="tb-btn spliter"></li>
+          <li className="tb-btn"><a title="Ordered List" onClick={this._listOlText}><i className="glyphicon glyphicon-th-list"></i></a></li>{/* list-ol */}
+          <li className="tb-btn"><a title="Unorded List" onClick={this._listUlText}><i className="glyphicon glyphicon-list"></i></a></li>{/* list-ul */}
+          <li className="tb-btn"><a title="Header" onClick={this._headerText}><i className="glyphicon glyphicon-header"></i></a></li>{/* header */}
+          {this._getExternalBtn()}
+        </ul>
+      )
+    }
   },
   _getExternalBtn () {
     return React.Children.map(this.props.children, (option) => {
@@ -87,29 +93,32 @@ const MdEditor = React.createClass({
   },
   _getModeBar () {
     const checkActive = (mode) => cNames({ active: this.state.mode === mode })
+    if(this.state.type === 'editMode'){
+      return (
+        <ul className="md-modebar">
+          <li className="tb-btn pull-right">
+            <a className={checkActive('preview')} onClick={this._changeMode('preview')} title="Markdown Mode">
+              <i className="glyphicon glyphicon-eye-open"></i>
+            </a>
+          </li> { /* preview mode */ }
+          <li className="tb-btn pull-right">
+            <a className={checkActive('split')} onClick={this._changeMode('split')} title="Preview Mode">
+              <i className="glyphicon glyphicon-modal-window"></i>
+            </a>
+          </li> { /* split mode */ }
+          <li className="tb-btn pull-right">
+            <a className={checkActive('edit')} onClick={this._changeMode('edit')} title="Split Mode">
+              <i className="glyphicon glyphicon-pencil"></i>
+            </a>
+          </li> { /* edit mode */ }
+          <li className="tb-btn spliter pull-right"></li>
+          <li className="tb-btn pull-right"><a title="Fullscreen" onClick={this._toggleFullScreen}><i className="glyphicon glyphicon-fullscreen"></i></a></li> {/* full-screen */}
+              <li className="tb-btn pull-right"><a title="Save" onClick={this._save}><i className="glyphicon glyphicon-floppy-disk"></i></a></li> {/* full-screen */}
+        </ul>
+      )
+    } else {
 
-    return (
-      <ul className="md-modebar">
-        <li className="tb-btn pull-right">
-          <a className={checkActive('preview')} onClick={this._changeMode('preview')} title="Markdown Mode">
-            <i className="glyphicon glyphicon-eye-open"></i>
-          </a>
-        </li> { /* preview mode */ }
-        <li className="tb-btn pull-right">
-          <a className={checkActive('split')} onClick={this._changeMode('split')} title="Preview Mode">
-            <i className="glyphicon glyphicon-modal-window"></i>
-          </a>
-        </li> { /* split mode */ }
-        <li className="tb-btn pull-right">
-          <a className={checkActive('edit')} onClick={this._changeMode('edit')} title="Split Mode">
-            <i className="glyphicon glyphicon-pencil"></i>
-          </a>
-        </li> { /* edit mode */ }
-        <li className="tb-btn spliter pull-right"></li>
-        <li className="tb-btn pull-right"><a title="Fullscreen" onClick={this._toggleFullScreen}><i className="glyphicon glyphicon-fullscreen"></i></a></li> {/* full-screen */}
-            <li className="tb-btn pull-right"><a title="Save" onClick={this._save}><i className="glyphicon glyphicon-floppy-disk"></i></a></li> {/* full-screen */}
-      </ul>
-    )
+    }
   },
   // event handlers
   _onChange (e) {
