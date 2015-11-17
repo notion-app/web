@@ -43,6 +43,7 @@
     "markdown-loader": "^0.1.7",
     "marked": "^0.3.5",
     "moment": "^2.10.6",
+    "ot": "0.0.15",
     "react": "^0.13.3",
     "react-bootstrap": "^0.25.1",
     "react-dock": "0.0.3",

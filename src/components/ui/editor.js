@@ -3,6 +3,10 @@ import marked from 'marked'
 import cNames from 'classnames'
 import NotebookActions from 'actions/NotebookActions';
 import LoginManager from 'util/LoginManager';
+import ot from 'ot';
+import API_ROOT from 'util/RouteDetails';
+
+let ws = null;
 
 require('../..//less/editor.less');
 
@@ -27,8 +31,53 @@ const MdEditor = React.createClass({
       type: type
     }
   },
+  onWebSocketOnOpen() {
+    console.log('web socket open!!');
+  },
+  onWebSocketError(err) {
+    console.log(err);
+  },
+  onWebSocketMessage(evt){
+    let message = evt.data;
+    console.log(data);
+
+  },
   componentDidMount () {
     // cache dom node
+    // Both users start with the same document
+    var str = "lorem ipsum";
+
+    // User A appends the string " dolor"
+    var operationA = new ot.TextOperation()
+    .retain(11)
+    .insert(" dolor");
+    var strA = operationA.apply(str); // "lorem ipsum dolor"
+
+    // User B deletes the string "lorem " at the beginning
+    var operationB = new ot.TextOperation()
+  . delete("lorem ")
+    .retain(5);
+    var strB = operationB.apply(str); // "ipsum";
+
+    var transformedPair = ot.TextOperation.transform(operationA, operationB);
+    var operationAPrime = transformedPair[0];
+    var operationBPrime = transformedPair[1];
+
+    console.log(operationA)
+    console.log(operationB)
+
+    console.log(operationAPrime);
+    console.log(operationBPrime);
+
+    var strABPrime = operationAPrime.apply(strB); // "ipsum dolor"
+    var strBAPrime = operationBPrime.apply(strA); // "ipsum dolor"
+
+    let socketUrl = `ws://notion-api-dev.herokuapp.com/v1/note/${this.state.note.id}/ws?token=${this.state.user.fbData.fb_auth_token}`;
+    ws = new WebSocket(socketUrl);
+    ws.onopen = this.onWebSocketOnOpen;
+    ws.onerror = this.onWebSocketError;
+    ws.onmessage = this.onWebSocketMessage;
+
     this.textControl = React.findDOMNode(this.refs.editor)
     this.previewControl = React.findDOMNode(this.refs.preview)
   },
@@ -37,7 +86,6 @@ const MdEditor = React.createClass({
     this.previewControl = null
   },
   render () {
-    console.log(this.state);
     const panelClass = cNames([ 'md-panel', { 'fullscreen': this.state.isFullScreen } ])
     const editorClass = cNames([ 'md-editor', { 'expand': this.state.mode === 'edit' } ])
     const previewClass = cNames([ 'md-preview', 'markdown', { 'expand': this.state.mode === 'preview', 'shrink': this.state.mode === 'edit' } ])
@@ -125,6 +173,8 @@ const MdEditor = React.createClass({
     this._isDirty = true // set dirty
     if (this._ltr) clearTimeout(this._ltr)
     this._ltr = setTimeout(() => {
+      console.log(ws);
+      ws.send(this.textControl.value);
       this.setState({ content: this.textControl.value, result: marked(this.textControl.value) }) // change state
     }, 300)
   },
