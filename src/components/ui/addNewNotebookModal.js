@@ -33,6 +33,7 @@ class AddNotebookModal  extends React.Component{
     this.onAuthChange = this.onAuthChange.bind(this);
     this.validateName = this.validateName.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
+    this.generateButton = this.generateButton.bind(this);
   }
 
   validateName(){
@@ -135,11 +136,21 @@ class AddNotebookModal  extends React.Component{
           onChange={this.onNameChange} />
       </div>
     )
+  }
 
+  generateButton(){
+    if(this.state.notebookName.length > 0) {
+      return (
+        <Button onClick={this.close}>Add Notebook</Button>
+      )
+    } else {
+      <Button disabled>Add Notebook</Button>
+    }
   }
 
   render() {
     return (
+
       <div>
         <Thumbnail className="new-notebook-icon" href="#" alt="171x180" bsSize="xsmall" onClick={this.open} src="https://cdn0.iconfinder.com/data/icons/math-business-icon-set/93/1_1-512.png"/>
 
@@ -153,7 +164,7 @@ class AddNotebookModal  extends React.Component{
             {this.state.selectedOption? this.renderSectionsDropDown():null}
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.close}>Add Notebook</Button>
+            {this.generateButton()}
           </Modal.Footer>
         </Modal>
       </div>

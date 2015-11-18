@@ -44,6 +44,7 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
     new HtmlWebpackPlugin({
       inject: true,
+      favicon:'./src/assets/images/favicon.png',
       template: 'src/index.html'
     }),
     new webpack.NoErrorsPlugin()
