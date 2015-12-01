@@ -35,7 +35,11 @@ class EditUserSettingsView extends React.Component {
       detailDockVisable:false,
       chooseSchoolTypeaheadVisible:false,
       schoolHasBeenSelected:false,
-      selectedOption: null
+      selectedOption: null,
+      currentUsername: "start",
+      currentEmail: "start",
+      initialUsername: null,
+      initialEmail: null
     }
 
     this.onNotebooksChange = this.onNotebooksChange.bind(this);
@@ -49,6 +53,8 @@ class EditUserSettingsView extends React.Component {
     this.getChangeSchoolButtonText = this.getChangeSchoolButtonText.bind(this);
     this.getChangeSchoolButtonStyle = this.getChangeSchoolButtonStyle.bind(this);
     this.getChangeSchoolTypeaheadClass = this.getChangeSchoolTypeaheadClass.bind(this);
+    this.onUsernameChange = this.onUsernameChange.bind(this);
+    this.onEmailChange = this.onEmailChange.bind(this);
   }
 
   onNotebooksChange(){
@@ -58,6 +64,15 @@ class EditUserSettingsView extends React.Component {
 
   onSchoolChange(){
     this.setState({schoolStore:SchoolStore.getState()});
+
+    // Load up the initial username and email:
+    let usernameSplit = this.state.user.fbData.email.split("@");
+    let username = usernameSplit;
+    if (usernameSplit.length > 1)
+      username = usernameSplit[0];
+
+    this.state.currentUsername = this.state.initialUsername = username;
+    this.state.currentEmail = this.state.initialEmail = this.state.user.fbData.email;
   }
 
   componentDidMount(){
@@ -73,6 +88,14 @@ class EditUserSettingsView extends React.Component {
 
   onWindowChange(){
     this.setState({windowStore:WindowStore.getState()});
+  }
+
+  onUsernameChange(){
+    this.setState({currentUsername: this.refs.inputUsername.getValue()});
+  }
+
+  onEmailChange(){
+    this.setState({currentEmail: this.refs.inputEmail.getValue()});
   }
 
   openSchoolModal(){
@@ -182,6 +205,7 @@ class EditUserSettingsView extends React.Component {
             <td>{n.section.professor}</td>
             <td>{`${n.section.semester} ${n.section.year}`}</td>
             <td>{n.section.time}</td>
+            <td>2</td>
           </tr>
         );
       });
@@ -190,10 +214,18 @@ class EditUserSettingsView extends React.Component {
   }
 
   renderTableData(){
+    let emailText = "aaronp2494@yahoo.com";
+
     let notebooks = this.state.noteBookStore.notebooks;    
     let userSchool = this.getSchoolByID(this.state.user.fbData.school_id);
     let userSchoolName = "(School Not Found)";
     let userSchoolLocation = "";
+
+    //let changeUsernameButton = this.refs.inputUsername === undefined || this.state.initialUsername == this.refs.inputUsername.getValue() ? <Button disabled>Change</Button> : <Button bsStyle="primary">Change</Button>;
+    //let changeEmailButton = this.refs.inputEmail === undefined || this.state.initialEmail == this.refs.inputEmail.getValue() ? <Button disabled>Change</Button> : <Button bsStyle="primary">Change</Button>;
+    let changeUsernameButton = <Button bsStyle="primary">Change</Button>;
+    let changeEmailButton = <Button bsStyle="primary">Change</Button>;
+
     if (userSchool != null){
       userSchoolName = userSchool.name;
       userSchoolLocation = userSchool.location;
@@ -213,7 +245,7 @@ class EditUserSettingsView extends React.Component {
             <Typeahead className={this.getChangeSchoolTypeaheadClass()} options={this.getAllSchoolNames()} maxVisible={5} onOptionSelected={this.onSchoolSelected}/>
           </Panel>
 
-          <Panel header={panelHeader}>
+          <Panel header={panelHeader} bsStyle="info">
             <Table striped bordered condensed hover responsive>
             <thead>
               <tr>
@@ -223,6 +255,7 @@ class EditUserSettingsView extends React.Component {
                 <th>Professor</th>
                 <th>Semester</th>
                 <th>Time</th>
+                <th>Number of Notes</th>
               </tr>
             </thead>
             <tbody>
@@ -230,6 +263,33 @@ class EditUserSettingsView extends React.Component {
             </tbody>
           </Table>
         </Panel>
+
+        <row>
+          <Col xs={12} md={6}>             
+            <Panel header="Other Settings">
+               <Input 
+                  type="text" 
+                  addonBefore="Username: "                   
+                  ref="inputUsername"
+                  value={this.state.currentUsername} 
+                  buttonAfter={changeUsernameButton} 
+                  onChange={this.onUsernameChange} />
+
+               <Input 
+                  type="text" 
+                  addonBefore="Email: "                 
+                  ref="inputEmail"
+                  value={this.state.currentEmail} 
+                  buttonAfter={changeEmailButton} 
+                  onChange={this.onEmailChange} />
+            </Panel>
+          </Col>
+          <Col xs={12} md={6}>             
+            <Panel header="Email Subscriptions">
+
+            </Panel>
+          </Col>
+        </row>
       </div>
       )
     }
