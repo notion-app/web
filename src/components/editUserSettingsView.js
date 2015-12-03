@@ -36,8 +36,8 @@ class EditUserSettingsView extends React.Component {
       chooseSchoolTypeaheadVisible:false,
       schoolHasBeenSelected:false,
       selectedOption: null,
-      currentUsername: "start",
-      currentEmail: "start",
+      currentUsername: null,
+      currentEmail: null,
       initialUsername: null,
       initialEmail: null
     }
@@ -55,6 +55,10 @@ class EditUserSettingsView extends React.Component {
     this.getChangeSchoolTypeaheadClass = this.getChangeSchoolTypeaheadClass.bind(this);
     this.onUsernameChange = this.onUsernameChange.bind(this);
     this.onEmailChange = this.onEmailChange.bind(this);
+    this.generateUsernameButton = this.generateUsernameButton.bind(this);
+    this.generateEmailButton = this.generateEmailButton.bind(this);
+    this.changeEmail = this.changeEmail.bind(this);
+    this.changeUsername = this.changeUsername.bind(this);
   }
 
   onNotebooksChange(){
@@ -197,6 +201,8 @@ class EditUserSettingsView extends React.Component {
       return null;
     } else {
       let notebookChildren = _.map(notebooks, (n,notebookIndex)=>{
+        //let notebooks = NotebookActions.getAllNotes(n.notebook_id, this.state.user.fbData.fb_auth_token);
+        //console.log(notebooks);
         return (
           <tr>
             <td>{n.course.name}</td>
@@ -213,18 +219,43 @@ class EditUserSettingsView extends React.Component {
     }
   }
 
-  renderTableData(){
-    let emailText = "aaronp2494@yahoo.com";
+  generateUsernameButton(){
+    if(this.refs.inputUsername === undefined || this.refs.inputUsername.getValue() == "" || this.state.initialUsername == this.refs.inputUsername.getValue()){
+      return (
+        <Button disabled>Change</Button>
+      )
+    } else {
+      return (
+        <Button bsStyle="primary" onClick={this.changeUsername}>Change</Button>
+      )
+    }
+  }
 
+  generateEmailButton(){
+    if(this.refs.inputEmail === undefined || this.refs.inputEmail.getValue() == "" || this.state.initialEmail == this.refs.inputEmail.getValue()){
+      return (
+        <Button disabled>Change</Button>
+      )
+    } else {
+      return (
+        <Button bsStyle="primary" onClick={this.changeEmail}>Change</Button>
+      )
+    }
+  }
+
+  changeUsername(){
+    alert('changing username');
+  }
+
+  changeEmail(){
+    alert('changing email');
+  }
+
+  renderTableData(){
     let notebooks = this.state.noteBookStore.notebooks;    
     let userSchool = this.getSchoolByID(this.state.user.fbData.school_id);
     let userSchoolName = "(School Not Found)";
     let userSchoolLocation = "";
-
-    //let changeUsernameButton = this.refs.inputUsername === undefined || this.state.initialUsername == this.refs.inputUsername.getValue() ? <Button disabled>Change</Button> : <Button bsStyle="primary">Change</Button>;
-    //let changeEmailButton = this.refs.inputEmail === undefined || this.state.initialEmail == this.refs.inputEmail.getValue() ? <Button disabled>Change</Button> : <Button bsStyle="primary">Change</Button>;
-    let changeUsernameButton = <Button bsStyle="primary">Change</Button>;
-    let changeEmailButton = <Button bsStyle="primary">Change</Button>;
 
     if (userSchool != null){
       userSchoolName = userSchool.name;
@@ -272,15 +303,15 @@ class EditUserSettingsView extends React.Component {
                   addonBefore="Username: "                   
                   ref="inputUsername"
                   value={this.state.currentUsername} 
-                  buttonAfter={changeUsernameButton} 
+                  buttonAfter={this.generateUsernameButton()} 
                   onChange={this.onUsernameChange} />
 
                <Input 
                   type="text" 
                   addonBefore="Email: "                 
                   ref="inputEmail"
-                  value={this.state.currentEmail} 
-                  buttonAfter={changeEmailButton} 
+                  value={this.state.currentEmail}  
+                  buttonAfter={this.generateEmailButton()} 
                   onChange={this.onEmailChange} />
             </Panel>
           </Col>
