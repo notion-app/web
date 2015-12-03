@@ -91,16 +91,6 @@ class NotionNavBar extends React.Component {
          							<i className="glyphicon glyphicon-user"></i>
          							Account Settings </a>
          						</li>
-         						<li>
-         							<a href="#" target="_blank">
-         							<i className="glyphicon glyphicon-ok"></i>
-         							Tasks </a>
-         						</li>
-         						<li>
-         							<a href="#">
-         							<i className="glyphicon glyphicon-flag"></i>
-         							Help </a>
-         						</li>
          					</ul>
          				</div>
          			</div>

@@ -191,7 +191,7 @@ onJoinedNoteDeleteClick(index){
           }
           let timeAgo = moment(note.notes[0].updated_at).fromNow();
           return (
-            <Col xs={12} md={4} key={childKey} className='notebookcol'>
+            <Col xs={12} md={4} key={childKey} className='notebookcol' onClick={this.onJoinedNoteClick.bind(this,childKey)}>
               <Panel className='joined-note-panel' header={ <h3> {n.title}<Glyphicon onClick={this.onJoinedNoteDeleteClick.bind(this,childKey)} className="pull-right removeNotebookIcon" glyph="remove" /> <Glyphicon className='pull-right' glyph="eye-open" onClick={this.onJoinedNoteViewClick.bind(this,childKey)}/></h3> } bsStyle="primary">
                   <div dangerouslySetInnerHTML={{ __html: marked(_.trunc(content,50))}}  onClick={this.onJoinedNoteClick.bind(this,childKey)}>
                   </div>
@@ -224,8 +224,8 @@ onJoinedNoteDeleteClick(index){
         childKey = childKey+1;
         if(note.title === '__add_new_note__'){
           return (
-            <Col xs={12} md={4} key={childKey} className='notebookcol'>
-              <Panel header={ <h3> Add New Notebook </h3> } bsStyle="default" className='addNewNotebookPanel' onClick={this.onNewNoteClick}>
+            <Col xs={12} md={4} key={childKey} className='notebookcol' onClick={this.onNewNoteClick}>
+              <Panel header={ <h3> Add New Note </h3> } bsStyle="default" className='addNewNotebookPanel' onClick={this.onNewNoteClick}>
                 <Thumbnail className="notebook-icon" href="#" alt="171x180" bsSize="xsmall" src="https://cdn0.iconfinder.com/data/icons/math-business-icon-set/93/1_1-512.png"/>
                   <div>
                     <Modal show={this.state.addNoteModalVisable} onHide={this.onModalclose}>
@@ -262,7 +262,7 @@ onJoinedNoteDeleteClick(index){
             content = '## This note is empty \n\n ### Add stuff';
           }
           return (
-            <Col xs={12} md={4} key={childKey} className='notebookcol'>
+            <Col xs={12} md={4} key={childKey} className='notebookcol' onClick={this.onUnjoinedNoteClick.bind(this,childKey)}>
               <Panel className='note-panel' header={ <h3> {n.title} <Glyphicon className='pull-right' glyph="eye-open" onClick={this.onUnjoinedNoteViewClick.bind(this,childKey)}/> </h3> } bsStyle="primary">
                 <div  dangerouslySetInnerHTML={{ __html: marked(_.trunc(content,50))}} onClick={this.onUnjoinedNoteClick.bind(this,childKey)} >
                 </div>
