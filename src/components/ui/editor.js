@@ -3,7 +3,7 @@ import marked from 'marked'
 import cNames from 'classnames'
 import NotebookActions from 'actions/NotebookActions';
 import LoginManager from 'util/LoginManager';
-import ot from 'ot';
+var ot = require('ot');
 import API_ROOT from 'util/RouteDetails';
 
 var jsdiff = require('diff');
