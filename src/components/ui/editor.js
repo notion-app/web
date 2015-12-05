@@ -160,7 +160,9 @@ const MdEditor = React.createClass({
       let text = this.textControl.value;
 
       let op = this.createOTFromChange(this.state.content, text);
-      ws.send(JSON.stringify(op));
+      let update = {type:'update', update:{baseLength:op.baseLength, targetLength:op.targetLength, ops:op.ops}}
+      console.log(update)
+      ws.send(JSON.stringify(update));
       this.setState({ content: text, result: marked(text) }) // change state
     }, 300)
   },
