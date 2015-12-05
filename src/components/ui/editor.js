@@ -18,6 +18,7 @@ const MdEditor = React.createClass({
     children: T.node
   },
   getInitialState () {
+    console.log(ot)
     let type = location.pathname.split('/').pop();
     let mode = '';
     type === 'editMode'? mode='split': mode='preview'
@@ -160,7 +161,7 @@ const MdEditor = React.createClass({
       let text = this.textControl.value;
 
       let op = this.createOTFromChange(this.state.content, text);
-      let update = {type:'update', update:{baseLength:op.baseLength, targetLength:op.targetLength, ops:op.ops}}
+      let update = {type:'update', update:{ops:op}}
       console.log(update)
       ws.send(JSON.stringify(update));
       this.setState({ content: text, result: marked(text) }) // change state
@@ -168,17 +169,22 @@ const MdEditor = React.createClass({
   },
   createOTFromChange(oldContent, newContent){
     var diff = jsdiff.diffChars(oldContent, newContent);
-    console.log(ot)
-    let op = new ot.TextOperation()
+    //console.log(ot)
+    //let op = new ot.TextOperation()
+    let op = []
     _.map(diff, (change) => {
       if(change.removed == undefined && change.added == undefined){
-        op.retain(change.count);
+        op.push(change.count)
+        //op.retain(change.count);
       } else if(change.removed == true){
-        op.delete(change.value);
+        op.push(-1*change.count)
+        //op.delete(change.value);
       } else if(change.added == true){
-        op.insert(change.value);
+        op.push(change.value);
+        //op.insert(change.value);
       }
     });
+    console.log(op)
     return op;
 
 
