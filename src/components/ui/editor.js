@@ -6,6 +6,8 @@ import LoginManager from 'util/LoginManager';
 import ot from 'ot';
 import API_ROOT from 'util/RouteDetails';
 
+var jsdiff = require('diff');
+
 let ws = null;
 
 require('../..//less/editor.less');
@@ -38,17 +40,27 @@ const MdEditor = React.createClass({
     console.log(err);
   },
   onWebSocketMessage(evt){
-    let message = evt.data;
-    console.log(data);
+    console.log(evt.data);
 
+  },
+
+  onWebSocketClose(){
+    console.log('socket closed');
   },
   componentDidMount () {
     // cache dom node
     let socketUrl = `ws://notion-api-dev.herokuapp.com/v1/note/${this.state.note.id}/ws?token=${this.state.user.fbData.fb_auth_token}`;
     ws = new WebSocket(socketUrl);
     ws.onopen = this.onWebSocketOnOpen;
+    ws.onclose = this.onWebSocketClose;
     ws.onerror = this.onWebSocketError;
     ws.onmessage = this.onWebSocketMessage;
+
+    setInterval(() => {
+      ws.send(JSON.stringify({'type':'ping'}))
+    },10000)
+
+
 
     this.textControl = React.findDOMNode(this.refs.editor)
     this.previewControl = React.findDOMNode(this.refs.preview)
@@ -145,11 +157,28 @@ const MdEditor = React.createClass({
     this._isDirty = true // set dirty
     if (this._ltr) clearTimeout(this._ltr)
     this._ltr = setTimeout(() => {
-      console.log(e);
-      ws.send(this.textControl.value);
-      console.log(this.textControl.value)
-      this.setState({ content: this.textControl.value, result: marked(this.textControl.value) }) // change state
+      let text = this.textControl.value;
+
+      let op = this.createOTFromChange(this.state.content, text);
+      ws.send(JSON.stringify(op));
+      this.setState({ content: text, result: marked(text) }) // change state
     }, 300)
+  },
+  createOTFromChange(oldContent, newContent){
+    var diff = jsdiff.diffChars(oldContent, newContent);
+    let op = new ot.TextOperation()
+    _.map(diff, (change) => {
+      if(change.removed == undefined && change.added == undefined){
+        op.retain(change.count);
+      } else if(change.removed == true){
+        op.delete(change.value);
+      } else if(change.added == true){
+        op.insert(change.value);
+      }
+    });
+    return op;
+
+
   },
   _changeMode (mode) {
     return (e) => {
