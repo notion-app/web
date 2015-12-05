@@ -169,19 +169,14 @@ const MdEditor = React.createClass({
   },
   createOTFromChange(oldContent, newContent){
     var diff = jsdiff.diffChars(oldContent, newContent);
-    //console.log(ot)
-    //let op = new ot.TextOperation()
-    let op = []
+    let op = new ot.TextOperation()
     _.map(diff, (change) => {
       if(change.removed == undefined && change.added == undefined){
-        op.push(change.count)
-        //op.retain(change.count);
+        op.retain(change.count);
       } else if(change.removed == true){
-        op.push(-1*change.count)
-        //op.delete(change.value);
+        op.delete(change.value);
       } else if(change.added == true){
-        op.push(change.value);
-        //op.insert(change.value);
+        op.insert(change.value);
       }
     });
     console.log(op)
