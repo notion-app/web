@@ -50,7 +50,6 @@ module.exports = {
   ],
 
   debug: true,
-  devtool: 'eval-cheap-module-source-map',
   devServer: {
     contentBase: "/target/",
     historyApiFallback: true
