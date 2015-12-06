@@ -28,12 +28,50 @@ class NoteEditView extends React.Component {
       windowStore:{
         width:window.innerWidth,
         height:window.innerHeight
-      }
+      },
+      ws:null
     }
+
+    let socketUrl = `ws://notion-api-dev.herokuapp.com/v1/note/${props.params.noteId}/ws?token=${LoginManager.getAuthInfo().fbData.fb_auth_token}`;
+    this.state.ws = new WebSocket(socketUrl);
+    this.state.ws.onopen = this.onWebSocketOnOpen;
+    this.state.ws.onclose = this.onWebSocketClose;
+    this.state.ws.onerror = this.onWebSocketError;
+    this.state.ws.onmessage = this.onWebSocketMessage;
+
+    setInterval(() => {
+      this.state.ws.send(JSON.stringify({'type':'ping'}))
+    },10000)
+
+
     this.onNotebookChange = this.onNotebookChange.bind(this);
     this.renderNoteLabel = this.renderNoteLabel.bind(this);
     this.renderReconmendationPanels = this.renderReconmendationPanels.bind(this);
     this.onItemDrop = this.onItemDrop.bind(this);
+    this.onWebSocketOnOpen = this.onWebSocketOnOpen.bind(this);
+    this.onWebSocketError = this.onWebSocketError.bind(this);
+    this.onWebSocketClose = this.onWebSocketClose.bind(this);
+  }
+
+  onWebSocketOnOpen() {
+    console.log('web socket open!!');
+  }
+  onWebSocketError(err) {
+    console.log(err);
+  }
+  onWebSocketMessage(evt){
+    console.log(evt.data);
+
+    var message = JSON.parse(evt.data);
+
+    if(message.type === 'recommendation'){
+      NotebookActions.addRecommendation(message.recommendation);
+    }
+
+  }
+
+  onWebSocketClose(){
+    console.log('socket closed');
   }
 
   componentDidMount(){
@@ -74,12 +112,13 @@ class NoteEditView extends React.Component {
   }
 
   renderReconmendationPanels(){
+    console.log(this.state.noteBookStore.recommmendations);
     let recsText = ["*** Kyle ***", "## Hello", "This is a really long string. It contains a lot of content. I hope that it works. Because if it doesn't it will look super ugly and scary and all that stuff",
                    "[link to google](www.google.com)", "```\n code block \n ```", "![alt](https://pbs.twimg.com/profile_images/602426157309517824/EtmL6ZUD.png)" ];
-    return _.map(recsText, (text,index) => {
+    return _.map(this.state.noteBookStore.recommmendations, (r,index) => {
       return (
-          <Panel key={index} draggable="true" onDragStart={(event) => {event.dataTransfer.setData('text', text)}}>
-            <div dangerouslySetInnerHTML={{ __html: marked(text)}} />
+          <Panel key={index} draggable="true" onDragStart={(event) => {event.dataTransfer.setData('text', JSON.stringify(r))}}>
+            <div dangerouslySetInnerHTML={{ __html: marked(r.text)}} />
           </Panel>
       )
     });
@@ -103,7 +142,7 @@ class NoteEditView extends React.Component {
           <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>
           {this.renderDock()}
           {this.renderNoteLabel()}
-          <Editor content={content} note={this.state.noteBookStore.singleNote} notebookId={this.state.notebookId}/>
+          <Editor content={content} note={this.state.noteBookStore.singleNote} notebookId={this.state.notebookId} ws={this.state.ws}/>
         </div>
       )
     }

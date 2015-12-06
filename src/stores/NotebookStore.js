@@ -11,6 +11,7 @@ class NotebookStore {
   joinedNotes = []
   unJoinedNotes = []
   allNotes = []
+  recommmendations = []
   singleNote = null;
 
   @bind(actions.fetchNotebooks)
@@ -84,6 +85,18 @@ class NotebookStore {
       return joinNote.notes[0].id === id;
     });
     this.unJoinedNotes = this.unJoinedNotes.concat(note);
+  }
+
+  @bind(actions.addRecommendation)
+  onAddRecommendation(recommendation){
+    this.recommmendations = this.recommmendations.concat(recommendation);
+  }
+
+  @bind(actions.removeRecommendation)
+  onRemoveRecommendation(recommendation){
+    _.remove(this.recommmendations, (r) => {
+      return recommendation.id == r.id;
+    });
   }
 }
 
