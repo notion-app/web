@@ -12,6 +12,7 @@ class NotebookStore {
   unJoinedNotes = []
   allNotes = []
   singleNote = null;
+  notesCountForNotebooks = []
 
   @bind(actions.fetchNotebooks)
   onFetchNotebooks(loadedNotebooks){
@@ -84,6 +85,11 @@ class NotebookStore {
       return joinNote.notes[0].id === id;
     });
     this.unJoinedNotes = this.unJoinedNotes.concat(note);
+  }
+
+  @bind(actions.countNotesForNotebook)
+  onCountNotebooks(noteCount){
+    this.notesCountForNotebooks = this.notesCountForNotebooks.concat(noteCount);
   }
 }
 

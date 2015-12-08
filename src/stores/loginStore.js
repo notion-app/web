@@ -16,14 +16,24 @@ class LoginStore {
 
   }
 
+  @bind(actions.setUserUsername)
+  onSetUsername(auth) {
+    this.userAuth = auth;
+  }
+
+  @bind(actions.setUserEmail)
+  onSetEmail(auth) {
+    this.userAuth = auth;
+  }
+
   @bind(actions.setAuthInfo)
   onSetAuthInfo(auth) {
-    this.userAuth = auth;
+    //this.userAuth = auth;
   }
 
   @bind(actions.getAuthInfo)
     onGetAuthInfo(auth){
-      this.userAuth = auth;
+      //this.userAuth = auth;
     }
 }
 

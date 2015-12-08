@@ -23,11 +23,14 @@ class EditUserSettingsView extends React.Component {
     this.state = {
       user: LoginManager.getAuthInfo(),
       noteBookStore: {
-        notebooks:[]
+        notebooks:[],        
+        unJoinedNotes:[],
+        notesCountForNotebooks:[]
       },
       schoolStore: {
         schools:[]
       },
+      notescountsForNotebook: [],
       windowStore:{
         width:window.innerWidth,
         height:window.innerHeight
@@ -197,12 +200,13 @@ class EditUserSettingsView extends React.Component {
 
   renderNotebooks() {
     let notebooks = this.state.noteBookStore.notebooks;
+    console.log(this.state.user.fbData);
     if (notebooks == null){
       return null;
     } else {
+      let notebookCounts = this.state.noteBookStore.notesCountForNotebooks;
       let notebookChildren = _.map(notebooks, (n,notebookIndex)=>{
-        //let notebooks = NotebookActions.getAllNotes(n.notebook_id, this.state.user.fbData.fb_auth_token);
-        //console.log(notebooks);
+        let count = _.result(_.findWhere(notebookCounts, {'notebook_id': n.notebook_id}), 'notes');
         return (
           <tr>
             <td>{n.course.name}</td>
@@ -211,7 +215,7 @@ class EditUserSettingsView extends React.Component {
             <td>{n.section.professor}</td>
             <td>{`${n.section.semester} ${n.section.year}`}</td>
             <td>{n.section.time}</td>
-            <td>2</td>
+            <td>{count}</td>
           </tr>
         );
       });
@@ -245,10 +249,12 @@ class EditUserSettingsView extends React.Component {
 
   changeUsername(){
     alert('changing username');
+    LoginActions.setUserUsername(this.state.user.fbData.id, this.refs.inputUsername.getValue(), this.state.user.fbData.fb_auth_token);
   }
 
   changeEmail(){
     alert('changing email');
+    LoginActions.setUserEmail(this.state.user.fbData.id, this.refs.inputEmail.getValue(), this.state.user.fbData.fb_auth_token);
   }
 
   renderTableData(){
@@ -256,6 +262,7 @@ class EditUserSettingsView extends React.Component {
     let userSchool = this.getSchoolByID(this.state.user.fbData.school_id);
     let userSchoolName = "(School Not Found)";
     let userSchoolLocation = "";
+    let innerCheckbox = <input type="checkbox" />;
 
     if (userSchool != null){
       userSchoolName = userSchool.name;
@@ -315,9 +322,11 @@ class EditUserSettingsView extends React.Component {
                   onChange={this.onEmailChange} />
             </Panel>
           </Col>
-          <Col xs={12} md={6}>             
+          <Col xs={12} md={6}>         
             <Panel header="Email Subscriptions">
-
+              <h4>Notify Me When...</h4>
+              <Input type="checkbox" label="A new reccomendation is available" />
+              <Input type="checkbox" label="My note is used in the master notebook" />
             </Panel>
           </Col>
         </row>
@@ -329,7 +338,7 @@ class EditUserSettingsView extends React.Component {
   render() {
     return (
       <div className='container landingContainer span5 fill'>
-        <h2>Hello, {this.state.user.fbData.name}! </h2>
+        <h2>Hello, {LoginManager.logout()}! </h2>
         <h4>Manage your profile here...</h4>
         <br/>
         <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>

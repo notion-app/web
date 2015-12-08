@@ -46,6 +46,38 @@ class LoginActions {
     LoginManager.logout();
     this.dispatch();
   }
+
+  setUserUsername(user_id, newusername, token) {
+    let path = `${API_ROOT}/user/${user_id}/username/${newusername}?token=${token}`;
+
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'PUT',
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done ((authInfo) => {
+      //LoginManager.setAuthInfo(authInfo);
+      //this.dispatch(authInfo);
+    });
+  }
+
+  setUserEmail(user_id, newemail, token) {
+    let path = `${API_ROOT}/user/${user_id}/email/${newemail}?token=${token}`;
+
+    $.ajax({
+      url:path,
+      crossDomain:true,
+      method:'PUT',
+      error: function(xhr,options,error){
+        console.log(error);
+      }
+    }).done ((authInfo) => {        
+      //LoginManager.setAuthInfo(authInfo);
+      //this.dispatch(authInfo);
+    });
+  }
 }
 
 export default LoginActions;

@@ -11,6 +11,24 @@ class NotebookActions {
   constructor() {
   }
 
+  countNotesForNotebook(notebooks, user, token){
+    let notebookChildren = _.map(notebooks, (n,notebookIndex)=>{
+      let notebook_id = n.notebook_id;
+      let path = `${API_ROOT}/notebook/${notebook_id}/topic?user=${user}&token=${token}`;
+      $.ajax({
+        url:path,
+        crossDomain:true,
+        method:'GET',
+        error: function(xhr,options,error){
+          console.log(error);
+        },
+      }).done((notes)=> {
+        let noteCount = [{notebook_id: notebook_id, notes: notes.length}];
+        this.dispatch(noteCount);
+      });
+    });
+  }
+
   fetchNotebooks(user_id, token){
     let path = `${API_ROOT}/user/${user_id}/subscription?token=${token}`
     $.ajax({
@@ -22,6 +40,7 @@ class NotebookActions {
       }
     }).done ((notebooks) => {
       this.dispatch(notebooks);
+      NotebookActions.countNotesForNotebook(notebooks, user_id, token);
     });
   }
 
