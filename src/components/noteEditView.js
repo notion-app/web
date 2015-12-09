@@ -112,7 +112,6 @@ class NoteEditView extends React.Component {
   }
 
   renderReconmendationPanels(){
-    console.log(this.state.noteBookStore.recommmendations);
     let recsText = ["*** Kyle ***", "## Hello", "This is a really long string. It contains a lot of content. I hope that it works. Because if it doesn't it will look super ugly and scary and all that stuff",
                    "[link to google](www.google.com)", "```\n code block \n ```", "![alt](https://pbs.twimg.com/profile_images/602426157309517824/EtmL6ZUD.png)" ];
     return _.map(this.state.noteBookStore.recommmendations, (r,index) => {
