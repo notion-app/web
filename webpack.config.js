@@ -2,7 +2,6 @@
 
 var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  EncodingPlugin = require('webpack-encoding-plugin'),
   path = require('path'),
   srcPath = path.join(__dirname, 'src');
 

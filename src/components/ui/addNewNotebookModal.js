@@ -92,7 +92,7 @@ class AddNotebookModal  extends React.Component{
     LoginStore.listen(this.onAuthChange);
     window.setTimeout(()=> {
       LoginActions.getAuthInfo();
-    },1000)
+    },5000)
   }
 
   getAllCourses() {

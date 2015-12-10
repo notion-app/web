@@ -45,17 +45,16 @@
     "marked": "^0.3.5",
     "moment": "^2.10.6",
     "ot": "0.0.15",
-    "react": "^0.13.3",
-    "react-bootstrap": "^0.25.1",
+    "react": "0.13.3",
+    "react-bootstrap": "0.25.1",
     "react-classset": "0.0.2",
     "react-dock": "0.0.3",
-    "react-dragon": "^2.0.0",
-    "react-facebook-login": "^1.0.5",
+    "react-dragon": "2.0.0",
+    "react-facebook-login": "1.0.5",
     "react-router": "0.13.3",
     "react-typeahead": "1.1.4",
-    "style-loader": "^0.12.4",
-    "url-loader": "^0.5.6",
-    "webpack-encoding-plugin": "0.0.1"
+    "style-loader": "0.12.4",
+    "url-loader": "^0.5.6"
   },
   "devDependencies": {}
 }
