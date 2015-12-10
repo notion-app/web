@@ -3,7 +3,7 @@ import marked from 'marked'
 import cNames from 'classnames'
 import NotebookActions from 'actions/NotebookActions';
 import LoginManager from 'util/LoginManager';
-import ot from 'ot';
+var ot = require('ot');
 import API_ROOT from 'util/RouteDetails';
 
 var jsdiff = require('diff');
@@ -30,44 +30,45 @@ const MdEditor = React.createClass({
       content: this.props.content || '',
       note: this.props.note,
       notebookId: this.props.notebookId,
-      type: type
+      type: type,
+      ws: this.props.ws
     }
-  },
-  onWebSocketOnOpen() {
-    console.log('web socket open!!');
-  },
-  onWebSocketError(err) {
-    console.log(err);
-  },
-  onWebSocketMessage(evt){
-    console.log(evt.data);
-
-  },
-
-  onWebSocketClose(){
-    console.log('socket closed');
   },
   componentDidMount () {
     // cache dom node
-    let socketUrl = `ws://notion-api-dev.herokuapp.com/v1/note/${this.state.note.id}/ws?token=${this.state.user.fbData.fb_auth_token}`;
-    ws = new WebSocket(socketUrl);
-    ws.onopen = this.onWebSocketOnOpen;
-    ws.onclose = this.onWebSocketClose;
-    ws.onerror = this.onWebSocketError;
-    ws.onmessage = this.onWebSocketMessage;
-
-    setInterval(() => {
-      ws.send(JSON.stringify({'type':'ping'}))
-    },10000)
-
-
-
     this.textControl = React.findDOMNode(this.refs.editor)
     this.previewControl = React.findDOMNode(this.refs.preview)
+    this.textarea = document.getElementById("textarea");
   },
   componentWillUnmount () {
     this.textControl = null
     this.previewControl = null
+  },
+  insertAtCursor(myField, myValue) {
+    //IE support
+    if (document.selection) {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+    }
+    //MOZILLA and others
+    else if (myField.selectionStart || myField.selectionStart == '0') {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        myField.value = myField.value.substring(0, startPos)
+            + myValue
+            + myField.value.substring(endPos, myField.value.length);
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+    }
+},
+  onRecommendationDrop(event){
+    event.preventDefault();
+    let recommendation = JSON.parse(event.dataTransfer.getData('text'))
+    this.insertAtCursor(this.textarea, recommendation.text);
+    NotebookActions.removeRecommendation(recommendation);
   },
   render () {
     const panelClass = cNames([ 'md-panel', { 'fullscreen': this.state.isFullScreen } ])
@@ -81,13 +82,14 @@ const MdEditor = React.createClass({
           {this._getToolBar()}
         </div>
         <div className={editorClass}>
-          <textarea  defaultValue={this.state.content} ref="editor" name="content" onChange={this._onChange}></textarea>{/* style={{height: this.state.editorHeight + 'px'}} */}
+          <textarea  id="textarea" className="dropTarget" onDrop={this.onRecommendationDrop} defaultValue={this.state.content} ref="editor" name="content" onChange={this._onChange}></textarea>{/* style={{height: this.state.editorHeight + 'px'}} */}
         </div>
         <div className={previewClass} ref="preview" dangerouslySetInnerHTML={{ __html: this.state.result }}></div>
         <div className="md-spliter"></div>
       </div>
     )
   },
+
   // public methods
   isDirty () {
     return this._isDirty || false
@@ -160,9 +162,8 @@ const MdEditor = React.createClass({
       let text = this.textControl.value;
 
       let op = this.createOTFromChange(this.state.content, text);
-      let update = {type:'update', update:{baseLength:op.baseLength, targetLength:op.targetLength, ops:op.ops}}
-      console.log(update)
-      ws.send(JSON.stringify(update));
+      let update = {type:'update', update:{ops:op}}
+      this.state.ws.send(JSON.stringify(update));
       this.setState({ content: text, result: marked(text) }) // change state
     }, 300)
   },

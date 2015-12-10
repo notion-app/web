@@ -152,7 +152,9 @@ class AddNotebookModal  extends React.Component{
     return (
 
       <div>
-        <Thumbnail className="new-notebook-icon" href="#" alt="171x180" bsSize="xsmall" onClick={this.open} src="https://cdn0.iconfinder.com/data/icons/math-business-icon-set/93/1_1-512.png"/>
+        <Row>
+          <Thumbnail className="new-notebook-icon" href="#" alt="171x180" bsSize="xsmall" onClick={this.open} src="https://cdn0.iconfinder.com/data/icons/math-business-icon-set/93/1_1-512.png"/>
+        </Row>
 
         <Modal show={this.state.showModal} onHide={this.close}>
           <Modal.Header closeButton>

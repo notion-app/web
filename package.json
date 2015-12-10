@@ -54,7 +54,8 @@
     "react-router": "0.13.3",
     "react-typeahead": "1.1.4",
     "style-loader": "^0.12.4",
-    "url-loader": "^0.5.6"
+    "url-loader": "^0.5.6",
+    "webpack-encoding-plugin": "0.0.1"
   },
   "devDependencies": {}
 }

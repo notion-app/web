@@ -1,4 +1,4 @@
-import flux from 'control';
+ import flux from 'control';
 import {createActions} from 'alt/utils/decorators';
 import LoginManager from 'util/LoginManager';
 import API_ROOT from 'util/RouteDetails';
@@ -234,6 +234,14 @@ class NotebookActions {
     }).done((note)=> {
       this.dispatch(note);
     });
+  }
+
+  addRecommendation(recommendation){
+    this.dispatch(recommendation);
+  }
+
+  removeRecommendation(recommendation){
+    this.dispatch(recommendation);
   }
 }
 

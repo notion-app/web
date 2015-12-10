@@ -11,6 +11,7 @@ class NotebookStore {
   joinedNotes = []
   unJoinedNotes = []
   allNotes = []
+  recommmendations = []
   singleNote = null;
   notesCountForNotebooks = []
 
@@ -90,6 +91,17 @@ class NotebookStore {
   @bind(actions.countNotesForNotebook)
   onCountNotebooks(noteCount){
     this.notesCountForNotebooks = this.notesCountForNotebooks.concat(noteCount);
+
+  @bind(actions.addRecommendation)
+  onAddRecommendation(recommendation){
+    this.recommmendations = this.recommmendations.concat(recommendation);
+  }
+
+  @bind(actions.removeRecommendation)
+  onRemoveRecommendation(recommendation){
+    _.remove(this.recommmendations, (r) => {
+      return recommendation.id == r.id;
+    });
   }
 }
 

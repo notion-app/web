@@ -2,15 +2,15 @@
 
 var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
+  EncodingPlugin = require('webpack-encoding-plugin'),
   path = require('path'),
   srcPath = path.join(__dirname, 'src');
 
 module.exports = {
-  target: 'web',
   cache: true,
   entry: {
     module: path.join(srcPath, 'module.js'),
-    common: ['react', 'react-router', 'alt', 'react-bootstrap', 'lodash', 'jquery', 'marked', 'classnames', 'ot']
+    common: ['react', 'react-router', 'alt', 'react-bootstrap', 'lodash', 'jquery', 'marked', 'classnames']
   },
 
   resolve: {
@@ -51,7 +51,7 @@ module.exports = {
   ],
 
   debug: true,
-  devtool: 'eval-cheap-module-source-map',
+   devtool: 'eval-cheap-module-source-map',
   devServer: {
     contentBase: "/target/",
     historyApiFallback: true
