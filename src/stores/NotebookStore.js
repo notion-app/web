@@ -91,6 +91,7 @@ class NotebookStore {
   @bind(actions.countNotesForNotebook)
   onCountNotebooks(noteCount){
     this.notesCountForNotebooks = this.notesCountForNotebooks.concat(noteCount);
+  }
 
   @bind(actions.addRecommendation)
   onAddRecommendation(recommendation){

@@ -200,7 +200,7 @@ class EditUserSettingsView extends React.Component {
 
   renderNotebooks() {
     let notebooks = this.state.noteBookStore.notebooks;
-    console.log(this.state.user.fbData);
+    //console.log(this.state.user.fbData);
     if (notebooks == null){
       return null;
     } else {
@@ -338,7 +338,7 @@ class EditUserSettingsView extends React.Component {
   render() {
     return (
       <div className='container landingContainer span5 fill'>
-        <h2>Hello, {LoginManager.logout()}! </h2>
+        <h2>Hello, {this.state.user.fbData.name}! </h2>
         <h4>Manage your profile here...</h4>
         <br/>
         <NotionNavBar name='Notion' style='fixedTop' height={this.state.windowStore.height} width={this.state.windowStore.width}/>
